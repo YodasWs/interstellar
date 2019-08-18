@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0"
+	id="ws.yodas.interstellar" version="1.0" versionCode="1">
+	<name>Interstellar</name>
+	<description>TBD</description>
+	<author email="interstellar@yodas.ws" href="https://github.com/YodasWs">Sam Grundman</author>
+	<author email="" href="">Peter</author>
+	<platform name="android"/>
+	<platform name="windows"/>
+</widget>
