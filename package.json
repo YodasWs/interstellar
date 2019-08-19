@@ -1,0 +1,15 @@
+{
+	"name": "interstellar",
+	"private": true,
+	"version": "0.0.1",
+	"description": "",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/YodasWs/interstellar.git"
+	},
+	"author": "Sam Grundman",
+	"bugs": {
+		"url": "https://github.com/YodasWs/interstellar/issues"
+	},
+	"homepage": "https://github.com/YodasWs/interstellar#readme"
+}
