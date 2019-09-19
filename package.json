@@ -11,5 +11,14 @@
 	"bugs": {
 		"url": "https://github.com/YodasWs/interstellar/issues"
 	},
-	"homepage": "https://github.com/YodasWs/interstellar#readme"
+	"homepage": "https://github.com/YodasWs/interstellar#readme",
+	"devDependencies": {
+		"@mightyplow/sass-dedup-importer": "^1.1.1",
+		"gulp": "github:gulpjs/gulp#4.0",
+		"gulp-concat": "^2.6.1",
+		"gulp-connect": "^5.7.0",
+		"gulp-load-plugins": "^2.0.1",
+		"gulp-sass": "^4.0.2",
+		"yargs": "^8.0.2"
+	}
 }
