@@ -1,0 +1,587 @@
+[
+	{
+		"name": "Administration",
+		"category": "Command",
+		"attribute": "Intellect",
+		"specializations": [
+			"Bureaucratic Manipulation",
+			"Logistics"
+		]
+	},
+	{
+		"name": "Behavior Modification",
+		"category": "Command",
+		"attribute": "Intellect",
+		"specializations": [
+			"Brainwashing",
+			"Hypnotism",
+			"Resistance"
+		]
+	},
+	{
+		"name": "Command",
+		"category": "Command",
+		"attribute": "Presence",
+		"specializations": [
+			"Combat Leadership",
+			"Military Training",
+			"Starship Command"
+		]
+	},
+	{
+		"name": "Diplomacy",
+		"category": "Command",
+		"attribute": "Presence",
+		"specializations": [
+			"Commercial Treaties",
+			"Interstellar Affairs",
+			"Interstellar Law",
+			"Negotiation"
+		]
+	},
+	{
+		"name": "Espionage",
+		"category": "Command",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Counterintelligence",
+			"Covert Communications",
+			"Cryptography",
+			"Forgery",
+			"Traffic Analysis"
+		]
+	},
+	{
+		"name": "Persuasion",
+		"category": "Command",
+		"attribute": "Presence",
+		"specializations": [
+			"Debate",
+			"Oratory",
+			"Storytelling"
+		]
+	},
+	{
+		"name": "Planetary Tactics",
+		"category": "Command",
+		"attribute": "Intellect",
+		"specializations": [
+			"Guerilla Warefare",
+			"Mechanized Ground Combat",
+			"Sea Combat",
+			"Small-Unit Tactics"
+		]
+	},
+	{
+		"name": "Starship Tactics",
+		"category": "Command",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Planetary Support Tactics"
+		]
+	},
+	{
+		"name": "Strategic Operations",
+		"category": "Command",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Defense in Depth",
+			"Invasion Strategies"
+		]
+	},
+	{
+		"name": "Computer",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Computer Simulation/Modeling",
+			"Data Alteration/Hacking",
+			"Programming",
+			"Research"
+		]
+	},
+	{
+		"name": "Demolitions",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Bomb Disposal",
+			"Booby Traps",
+			"Land Mines",
+			"Nuclear Demolitions",
+			"Primitive Demolitions",
+			"Shipboard Demolitions"
+		]
+	},
+	{
+		"name": "Energy Weapon",
+		"category": "Operations",
+		"attribute": "Coordination",
+		"specializations": [
+		]
+	},
+	{
+		"name": "Engineering, Material",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Aeronautical/Aerodynamics",
+			"Civil",
+			"Mechanical",
+			"Metallurgical",
+			"Personal Equipment",
+			"Structural/Spacefram",
+			"Vehicular"
+		]
+	},
+	{
+		"name": "Engineering, Propulsion",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Fusion",
+			"Impulse",
+			"Ion",
+			"Rocketry",
+			"Shuttlecraft",
+			"Propulsion Systems"
+		]
+	},
+	{
+		"name": "Engineering, Systems",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Communications Systems",
+			"Computer Systems",
+			"Diagnostics",
+			"Environmental Systems",
+			"Weapon Systems"
+		]
+	},
+	{
+		"name": "First Aid",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"specializations": [
+			"Chemical-biological First Aid",
+			"Wound/Combat Trauma"
+		]
+	},
+	{
+		"name": "Heavy Weapons",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+		]
+	},
+	{
+		"name": "Personal Equipment",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Communicator",
+			"Environmental Suit"
+		]
+	},
+	{
+		"name": "Planetside Survival",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"specializations": [
+			"Arctic",
+			"Desert",
+			"Forest",
+			"Jungle",
+			"Mountain",
+			"Ocean",
+			"Urban"
+		]
+	},
+	{
+		"name": "Projectile Weapon",
+		"category": "Operations",
+		"attribute": "Coordination",
+		"trainingRequired": true,
+		"specializations": [
+			"Gunpowder Pistol",
+			"Gunpowder Rifle",
+			"Submachine Gun",
+			"Needle Weapons",
+			"Gauss Weapons"
+		]
+	},
+	{
+		"name": "Security",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Law Enforcement",
+			"Lockpicking",
+			"Security Systems",
+			"Security Procedures"
+		]
+	},
+	{
+		"name": "Shipboard Systems",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Communications",
+			"Environmental Control",
+			"Flight Control",
+			"Mission Ops",
+			"Sensors",
+			"Tactical"
+		]
+	},
+	{
+		"name": "Unamed Combat",
+		"category": "Operations",
+		"attribute": "Coordination",
+		"trainingRequired": true,
+		"specializations": [
+			"Boxing",
+			"Karate",
+			"Wrestling"
+		]
+	},
+	{
+		"name": "Vehical Operation",
+		"category": "Operations",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Atrmospheric Craft",
+			"Ground Vehicles",
+			"Shuttlecraft"
+		]
+	},
+	{
+		"name": "Life Sciences",
+		"category": "Sciences",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Agronomy",
+			"Bioengineering",
+			"Biology",
+			"Bionics",
+			"Biotechnology",
+			"Botany",
+			"Ecology",
+			"Exobiology",
+			"Genetics",
+			"Microbiology",
+			"Paleontology",
+			"Zoology"
+		]
+	},
+	{
+		"name": "Medical Sciences",
+		"category": "Sciences",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Cardiology",
+			"Exoanatomy",
+			"Forensic Pathology",
+			"General Medicine",
+			"Neurology",
+			"Pathology",
+			"Psychology",
+			"Toxicology"
+		]
+	},
+	{
+		"name": "Physical Sciences",
+		"category": "Sciences",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Biophysics",
+			"Chemistry",
+			"Computer Science",
+			"Mathematics",
+			"Physics"
+		]
+	},
+	{
+		"name": "Planetary Sciences",
+		"category": "Sciences",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Climatology",
+			"Geology",
+			"Hydrology",
+			"Mineralogy",
+			"Oceanography",
+			"Planetology",
+			"Volcanology"
+		]
+	},
+	{
+		"name": "Social Sciences",
+		"category": "Sciences",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Anthropology",
+			"Archaeology",
+			"Economics",
+			"Geography",
+			"Paleoanthropology",
+			"Political Science",
+			"Sociology"
+		]
+	},
+	{
+		"name": "Space Sciences",
+		"category": "Sciences",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Astrogation",
+			"Astronomy",
+			"Astrophysics",
+			"Stellar Cartography",
+			"Thermodynamics"
+		]
+	},
+	{
+		"name": "World Knowledge",
+		"category": "Sciences",
+		"attribute": "Intellect",
+		"specializations": [
+			"Earth",
+			"Luna",
+			"Mars"
+		]
+	},
+	{
+		"name": "Acrobatics",
+		"category": "Other",
+		"attribute": "Coordination",
+		"specializations": [
+			"Balance Walking",
+			"Floor Exercises",
+			"Gymnastics",
+			"Parallel Bars",
+			"Rings",
+			"Rope Swinging"
+		]
+	},
+	{
+		"name": "Animal Handling",
+		"category": "Other",
+		"attribute": "Presence",
+		"specializations": [
+		]
+	},
+	{
+		"name": "Artistic Expression",
+		"category": "Other",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+			"Acting",
+			"Cooking",
+			"Dance",
+			"Drawing",
+			"Opera",
+			"Painting",
+			"Poetry"
+		]
+	},
+	{
+		"name": "Athletics",
+		"category": "Other",
+		"attribute": "Fitness",
+		"specializations": [
+			"Climbing",
+			"Jumping",
+			"Lifting",
+			"Running"
+		]
+	},
+	{
+		"name": "Bargain",
+		"category": "Other",
+		"attribute": "Presence",
+		"specializations": [
+			"Bribery",
+			"Marketplace Haggling"
+		]
+	},
+	{
+		"name": "Charm",
+		"category": "Other",
+		"attribute": "Presence",
+		"specializations": [
+			"Influence",
+			"Seduction"
+		]
+	},
+	{
+		"name": "Concealment",
+		"category": "Other",
+		"attribute": "Intellect",
+		"specializations": [
+			"Conceal Weapon",
+			"Cache Supplies",
+			"Conceal Smuggled Objects"
+		]
+	},
+	{
+		"name": "Craft",
+		"category": "Other",
+		"attribute": "Coordination",
+		"trainingRequired": true,
+		"specializations": [
+			"Chef",
+			"Jeweler",
+			"Potter",
+			"Tailor"
+		]
+	},
+	{
+		"name": "Culture",
+		"category": "Other",
+		"attribute": "Intellect",
+		"specializations": [
+		]
+	},
+	{
+		"name": "Disguise",
+		"category": "Other",
+		"attribute": "Presence",
+		"specializations": [
+		]
+	},
+	{
+		"name": "Dodge",
+		"category": "Other",
+		"attribute": "Coordination"
+	},
+	{
+		"name": "Fast Talk",
+		"category": "Other",
+		"attribute": "Intellect"
+	},
+	{
+		"name": "Gaming",
+		"category": "Other",
+		"attribute": "Intellect",
+		"specializations": [
+		]
+	},
+	{
+		"name": "History",
+		"category": "Other",
+		"attribute": "Intellect",
+		"specializations": [
+		]
+	},
+	{
+		"name": "Intimidation",
+		"category": "Other",
+		"attribute": "Presence",
+		"specializations": [
+			"Bluster",
+			"Cross-examination",
+			"Interrogation",
+			"Resistance",
+			"Torture"
+		]
+	},
+	{
+		"name": "Knowledge",
+		"category": "Other",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"separateSkills": true
+	},
+	{
+		"name": "Language",
+		"category": "Other",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"separateSkills": true
+	},
+	{
+		"name": "Law",
+		"category": "Other",
+		"attribute": "Intellect",
+		"trainingRequired": true,
+		"specializations": [
+		]
+	},
+	{
+		"name": "Merchant",
+		"category": "Other",
+		"attribute": "Intellect",
+		"specializations": [
+		]
+	},
+	{
+		"name": "Primitive Weaponry",
+		"category": "Other",
+		"attribute": "Coordination",
+		"specializations": [
+			"Rapier",
+			"Sword"
+		]
+	},
+	{
+		"name": "Search",
+		"category": "Other",
+		"attribute": "Intellect"
+	},
+	{
+		"name": "Sleight of Hand",
+		"category": "Other",
+		"attribute": "Coordination",
+		"trainingRequired": true,
+		"specializations": [
+			"Magic Tricks",
+			"Pick Pocket"
+		]
+	},
+	{
+		"name": "Stealth",
+		"category": "Other",
+		"attribute": "Coordination",
+		"specializations": [
+			"Hide",
+			"Stealthy Movement"
+		]
+	},
+	{
+		"name": "Streetwise",
+		"category": "Other",
+		"attribute": "Intellect",
+		"specializations": [
+			"Locate Contraband"
+		]
+	},
+	{
+		"name": "Theology",
+		"category": "Other",
+		"attribute": "Intellect",
+		"specializations": [
+		]
+	}
+]
