@@ -14,6 +14,16 @@ const gfx = (function() {
 	const shapes = [];
 
 	function Shape(color) {
+		if (!(color instanceof Array)) {
+			throw new TypeError('Color must be an array of length 3 or 4');
+		}
+		if (color.length === 3) {
+			color.push(1);
+		}
+		if (color.length !== 4) {
+			throw new TypeError('Color must be an array of length 3 or 4');
+		}
+
 		this.color = color;
 		this.rotation = matrix.identity(3);
 		this.translation = new Array(3).fill(0);
@@ -62,12 +72,6 @@ const gfx = (function() {
 						),
 					);
 				});
-				console.log(
-					'Sam, numbers:\n',
-					this.pointColors.length, 'colors,\n',
-					this.renderedNormals.length, 'normals,\n',
-					this.renderedPoints.length, 'points',
-				);
 			}
 			return this;
 		},
@@ -257,7 +261,6 @@ const gfx = (function() {
 				}
 			}
 		}
-		console.log('Sphere:', this.indices.length, 'indices,', this.points.length, 'points');
 	}
 	Sphere.prototype = {
 		__proto__: Shape.prototype,

@@ -52,7 +52,7 @@ function initShaderProgram(gl) {
 	// Vertex shader program
 	const vsSource = `
 		attribute vec4 aVertexPosition;
-		attribute vec3 aVertexColor;
+		attribute vec4 aVertexColor;
 		uniform mat4 uProjectionMatrix;
 		uniform mat4 uCameraMatrix;
 		uniform mat4 uNormalMatrix;
@@ -74,7 +74,7 @@ function initShaderProgram(gl) {
 			// Each Point's Projected Position
 			gl_Position = uProjectionMatrix * uCameraMatrix * aVertexPosition;
 
-			vColor = vec4(aVertexColor, 1.0);
+			vColor = aVertexColor;
 			vAmbientLight = uAmbientLight;
 			vDLightColor = uDLightColor;
 
@@ -180,7 +180,7 @@ function drawScene(bufferData) {
 			{
 				array: buffer.pointColors,
 				attrib: 'vertexColor',
-				numBytes: 3,
+				numBytes: 4,
 			},
 			// Vertices
 			{
