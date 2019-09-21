@@ -1,0 +1,11 @@
+{
+	"name": "interstellar",
+	"components": [],
+	"sections": [],
+	"modules": [],
+	"pages": [],
+	"json": {
+		"galaxy": "js/galaxy",
+		"skills": "js/skills"
+	}
+}

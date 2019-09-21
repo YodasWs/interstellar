@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-<meta charset="utf-8"/>
-<title>Interstellar</title>
-<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1,
-	width=device-width, height=device-height, target-densitydpi=device-dpi" />
-<meta name="msapplication-tap-highlight" content="no" />
-<meta name="format-detection" content="telephone=no" />
-<script src="cordova.js"></script>
-<script>
-// For anything requiring a loaded dependency
+<!doctype html><html lang="en-US"><head><meta charset="utf-8"/><meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width,height=device-height,target-densitydpi=device-dpi"/><meta name="msapplication-tap-highlight" content="no"/><meta name="format-detection" content="telephone=no"/><link rel="stylesheet" href="min.css"/><script src="cordova.js"></script><script>// For anything requiring a loaded dependency
 window.onReady = function(cb){
 var c=0,b=function(){if(!c){if(document.readyState=='complete'){cb();c=true}}}
 if(document.readyState=='complete')b()
@@ -17,10 +6,4 @@ else if(Element.prototype.addEventListener)document.addEventListener('readystate
 else if(Element.prototype.attachEvent)document.attachEvent('onreadystatechange',b)
 };
 // Load shim for browser testing
-if (!window.cordova) document.write('<script src="js/web/phonegap-shim.js"><\/script>');
-</script>
-</head>
-<body>
-<h1>Interstellar</h1>
-</body>
-<html>
+if (!window.cordova) document.write('<script src="res/phonegap-shim.js"><\/script>');</script><script src="res/yodasws.js"></script><script src="app.js"></script><title>Interstellar</title></head><body><header><h1>Interstellar</h1></header><nav hidden><a href=".">Home</a></nav><main></main></body></html>

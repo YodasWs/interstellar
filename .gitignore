@@ -9,6 +9,10 @@ yarn-error.log*
 *.swp
 *~
 
+# Build directories
+build/
+bundle/
+
 # Runtime data
 pids
 *.pid
