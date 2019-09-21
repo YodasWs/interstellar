@@ -108,7 +108,13 @@ const gfx = (function() {
 		},
 	};
 
-	function Square(x, y, width, height, color) {
+	function Square({
+		x,
+		y,
+		width,
+		height,
+		color,
+	}) {
 		Shape.call(this, color);
 		this.points = [
 			[x, y, 0],
@@ -125,13 +131,18 @@ const gfx = (function() {
 		constructor: Square,
 	};
 
-	function Circle(r, thickness, color) {
+	function Circle({
+		r,
+		thickness,
+		color,
+		n = 80,
+	}) {
 		Shape.call(this, color);
 
 		this.drawType = gl.TRIANGLE_STRIP;
 
 		let i = 0;
-		for (let θ=0; θ<360; θ+=360/80) {
+		for (let θ=0; θ<360; θ+=360/n) {
 			this.points.push([
 				(r + (-1) ** (i % 2) * thickness) * Math.cos(θ * Math.PI / 180),
 				(r + (-1) ** (i % 2) * thickness) * Math.sin(θ * Math.PI / 180),
@@ -146,19 +157,31 @@ const gfx = (function() {
 		constructor: Circle,
 	};
 
-	function Disc(r, color) {
+	function Disc({
+		r,
+		color,
+		n = 80,
+	}) {
 		Shape.call(this, color);
 		this.points = [[0,0,0]];
 		this.indices = [0];
+		this.normals = [[0,0,1]];
 
 		this.drawType = gl.TRIANGLE_FAN;
 
+		let inward = true;
+
 		let i = 0;
-		for (let θ=0; θ<360; θ+=360/80) {
+		for (let θ=0; θ<360; θ+=360/n) {
 			this.points.push([
 				r * Math.cos(θ * Math.PI / 180),
 				r * Math.sin(θ * Math.PI / 180),
 				0,
+			]);
+			this.normals.push([
+				-1 * Math.cos(θ * Math.PI / 180 + (inward ? 0 : Math.PI)),
+				-1 * Math.sin(θ * Math.PI / 180 + (inward ? 0 : Math.PI)),
+				0.5,
 			]);
 			this.indices.push(++i);
 		}
@@ -169,24 +192,32 @@ const gfx = (function() {
 		constructor: Disc,
 	};
 
-	function Ring(r, thickness, color, inward = false) {
+	function Ring({
+		r,
+		thickness,
+		color,
+		n = 80,
+		inward = false,
+	}) {
 		Shape.call(this, color);
 
 		this.drawType = gl.TRIANGLE_STRIP;
 
 		let i = 0;
-		for (let θ=0; θ<360; θ+=360/80) {
-			this.points.push([
-				r * Math.cos(θ * Math.PI / 180),
-				r * Math.sin(θ * Math.PI / 180),
-				(-1) ** (i % 2) * thickness,
-			]);
-			this.normals.push([
-				Math.cos(θ * Math.PI / 180 + (inward ? 0 : Math.PI)),
-				Math.sin(θ * Math.PI / 180 + (inward ? 0 : Math.PI)),
-				0,
-			]);
-			this.indices.push(i++);
+		for (let θ=0; θ<360; θ+=360/n) {
+			for (let k=0; k<2; k++) {
+				this.points.push([
+					r * Math.cos(θ * Math.PI / 180),
+					r * Math.sin(θ * Math.PI / 180),
+					(-1) ** (k % 2) * thickness,
+				]);
+				this.indices.push(i++);
+				this.normals.push([
+					Math.cos(θ * Math.PI / 180 + (inward ? 0 : Math.PI)),
+					Math.sin(θ * Math.PI / 180 + (inward ? 0 : Math.PI)),
+					0,
+				]);
+			}
 		}
 		this.indices.push(0, 1);
 	}
@@ -195,7 +226,13 @@ const gfx = (function() {
 		constructor: Ring,
 	};
 
-	function Cone(r, height, color, inward = false) {
+	function Cone({
+		r,
+		height,
+		color,
+		inward = false,
+		n = 80,
+	}) {
 		Shape.call(this, color);
 
 		this.drawType = gl.TRIANGLE_FAN;
@@ -204,7 +241,7 @@ const gfx = (function() {
 		this.indices = [0];
 
 		let i = 0;
-		for (let θ=0; θ<360; θ+=360/80) {
+		for (let θ=0; θ<360; θ+=360/n) {
 			this.points.push([
 				r * Math.cos(θ * Math.PI / 180),
 				r * Math.sin(θ * Math.PI / 180),
@@ -224,7 +261,11 @@ const gfx = (function() {
 		constructor: Cone,
 	};
 
-	function Sphere(r, color) {
+	function Sphere({
+		r,
+		color,
+		n = 55,
+	}) {
 		Shape.call(this, color);
 
 		this.drawType = gl.TRIANGLE_STRIP;
@@ -232,7 +273,6 @@ const gfx = (function() {
 		this.normals = [];
 		this.points = [];
 
-		const n = 55;
 		let i = 0;
 		for (let α=0; α<=180; α+=180/n) {
 			let j = 0;
@@ -282,7 +322,7 @@ const gfx = (function() {
 		draw(now) {
 			WebGL.rotateCamera(
 				45,
-				(now / 100) % 360,
+				(now / 50) % 360,
 				0,
 			);
 			const bufferData = [];
@@ -344,11 +384,15 @@ const galaxy = require('./galaxy.json');
 console.log('galaxy:', galaxy);
 galaxy.forEach((star, i) => {
 	if (i > 5) return;
-	const sol = new gfx.Sphere(10, [
-		ff / ff,
-		ff / ff,
-		0 / ff,
-	]);
+	const sol = new gfx.Sphere({
+		r: 10,
+		color: [
+			ff / ff,
+			ff / ff,
+			0 / ff,
+		],
+		n: 4,
+	});
 	const α = (star.α[0] + star.α[1] / 60 + star.α[2] / 60 / 60) / 12 * Math.PI;
 	const δ = (star.δ[0] + star.δ[1] / 60 + star.δ[2] / 60 / 60) / 180 * Math.PI;
 	const d = star.d * multiplier;
@@ -361,16 +405,32 @@ console.log('Sam, δ:', δ);
 	gfx.addShapes(sol);
 });
 
-const halo = new Array(1).fill(0).map(() => new gfx.Disc(10 * multiplier, [
-	0,//Number.parseInt('2e', 16) / ff,
-	0,//Number.parseInt('8b', 16) / ff,
-	0,//Number.parseInt('57', 16) / ff,
-	0.8,
-]));
-// halo[1].rotate(0, 180, 0);
+const planeColor = [
+	0.1,//Number.parseInt('2e', 16) / ff,
+	0.1,//Number.parseInt('8b', 16) / ff,
+	0.1,//Number.parseInt('57', 16) / ff,
+	0.6,
+]
+
+const halo = new Array(2).fill(0).map(() => new gfx.Disc({
+	r: 10 * multiplier,
+	color: planeColor,
+	n: 40,
+}));
 halo[0].translate(0, 0, 0.01);
-// halo[1].translate(0, 0, -0.01);
+halo[1].translate(0, 0, -0.01);
+halo[1].rotate(0, 180, 0);
 gfx.addShapes(...halo);
+
+const ring = new Array(2).fill(0).map((r, i) => new gfx.Ring({
+	r: 10 * multiplier + (-1) ** (i % 2) * 0.01 + 1,
+	thickness: 5,
+	color: planeColor,
+	inward: i % 2 === 0,
+	n: 80,
+}));
+console.log('ring:', ring);
+gfx.addShapes(...ring);
 
 /*
 const radii = {

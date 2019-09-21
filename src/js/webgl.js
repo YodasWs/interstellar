@@ -258,14 +258,14 @@ function zoom(z) {
 
 return {
 	rotateCamera,
-	rotateLight(x, y, z) {
-		dLightMatrix = matrix.flatten(matrix.axonometric(x, y, z));
-	},
 	setAmbientLight(color) {
 		ambientLight = color;
 	},
 	setSpotlightColor(color) {
 		dLightColor = color;
+	},
+	rotateSpotlight(x, y, z) {
+		dLightMatrix = matrix.flatten(matrix.axonometric(x, y, z));
 	},
 	drawScene,
 	lookAt,
