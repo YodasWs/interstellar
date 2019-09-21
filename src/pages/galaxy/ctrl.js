@@ -280,12 +280,14 @@ const gfx = (function() {
 		},
 
 		draw(now) {
-			now *= Number.parseInt(document.getElementById('speed').value, 10) / 100;
-			const n = now % 360;
-
+			WebGL.rotateCamera(
+				45,
+				(now / 100) % 360,
+				0,
+			);
 			const bufferData = [];
 			shapes.forEach((shape) => {
-				bufferData.push(shape.render(n));
+				bufferData.push(shape.render());
 			});
 
 			WebGL.drawScene(bufferData);
@@ -298,28 +300,15 @@ function rotateCamera() {
 	WebGL.rotateCamera(
 		Number.parseInt(document.getElementById('radx').value, 10),
 		Number.parseInt(document.getElementById('rady').value, 10),
-		Number.parseInt(document.getElementById('radz').value, 10),
+		0,
 	);
 }
 document.getElementById('radx').addEventListener('input', rotateCamera);
 document.getElementById('rady').addEventListener('input', rotateCamera);
-document.getElementById('radz').addEventListener('input', rotateCamera);
 rotateCamera();
 
-function rotateLight() {
-	WebGL.rotateLight(
-		Number.parseInt(document.getElementById('lightx').value, 10),
-		Number.parseInt(document.getElementById('lighty').value, 10),
-		Number.parseInt(document.getElementById('lightz').value, 10),
-	);
-}
-document.getElementById('lightx').addEventListener('input', rotateLight);
-document.getElementById('lighty').addEventListener('input', rotateLight);
-document.getElementById('lightz').addEventListener('input', rotateLight);
-rotateLight();
-
-WebGL.setAmbientLight([0.6, 0.6, 0.6]);
-WebGL.setSpotlightColor([0, 0, 0]);
+WebGL.setAmbientLight([1, 1, 1]);
+WebGL.setSpotlightColor([0.1, 0.1, 0.1]);
 
 function zoom() {
 	WebGL.zoom(
@@ -335,48 +324,6 @@ function showNumbers(e) {
 document.querySelectorAll('input[type="range"]').forEach((input) => {
 	input.addEventListener('input', showNumbers);
 });
-
-function chooseCamera(e) {
-	if (!e.target.checked) return;
-	document.querySelectorAll(`[data-camera]`).forEach((section) => {
-		if (section.dataset.camera === e.target.value) {
-			section.removeAttribute('hidden');
-		} else {
-			section.setAttribute('hidden', '');
-		}
-	});
-	switch (e.target.value) {
-		case 'origin':
-			rotateCamera();
-			break;
-		case 'surface':
-			setLatitude();
-			break;
-	}
-}
-document.querySelectorAll('[name="camera"]').forEach((section) => {
-	section.addEventListener('input', chooseCamera);
-});
-
-function setLatitude(now) {
-	const α = (now / 5) % 360;
-	const β = 0; // (now / 10) % 180 - 90;
-	const c = (radii.scale + 5) / 640 / 5;
-	WebGL.lookAt(
-		[
-			c * Math.sin(β * Math.PI / 180),
-			c * Math.cos(β * Math.PI / 180),
-			0,
-		],
-		[
-			Math.cos(α * Math.PI / 180),
-			0,
-			Math.sin(α * Math.PI / 180),
-		],
-		[0, Math.sin(β * Math.PI / 180), Math.cos(β * Math.PI / 180)],
-	);
-}
-document.getElementById('lat').addEventListener('input', setLatitude);
 
 const a0 = 10 * 16 +  0;
 const f0 = 15 * 16 +  0;

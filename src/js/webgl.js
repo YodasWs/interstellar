@@ -37,6 +37,21 @@ module.exports = (function() {
 				dLightColor: gl.getUniformLocation(shaderProgram, 'uDLightColor'),
 			},
 		};
+
+		// Set Drawing Options
+		gl.clearColor(0.3, 0.3, 0.3, 1);
+		gl.clearDepth(1);
+
+		// Depth
+		gl.enable(gl.DEPTH_TEST);
+		gl.depthFunc(gl.LEQUAL);
+		// gl.depthMask(false);
+
+		// Blending
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		gl.blendEquation(gl.FUNC_ADD);
+		gl.disable(gl.CULL_FACE);
 	};
 
 	let cameraMatrix = matrix.flatten(matrix.identity(4));
@@ -149,11 +164,6 @@ function loadShader(gl, type, source) {
 // Draw the scene.
 //
 function drawScene(bufferData) {
-	// Clear the canvas before we start drawing on it.
-	gl.clearColor(0, 0, 0, 1);
-	gl.enable(gl.DEPTH_TEST);
-	gl.depthFunc(gl.LEQUAL);
-	gl.clearDepth(1);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	// Perspective
