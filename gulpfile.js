@@ -349,8 +349,8 @@ const options = {
 			replacement: () => {
 				// Read app.json to build site!
 				const site = require('./src/app.json');
-				if (!site.modules) site.modules = [];
-				const requiredFiles = [];
+				let requires = 'const json = {};\n';
+
 				[
 					{
 						prop:'pages',
@@ -364,39 +364,41 @@ const options = {
 					if (!site[p.prop]) site[p.prop] = [];
 					site[p.prop].forEach((c) => {
 						const module = c.module || camelCase(p.pref, c.path);
-						if (!site.modules.includes(module)) site.modules.push(module);
 						['module', 'ctrl'].forEach((k) => {
 							const file = path.join(p.prop, c.path, `${k}.js`);
 							try {
 								fs.accessSync(`./src/${file}`);
-								requiredFiles.push(file);
+								requires += `require('../src/${file}');\n`;
 							} catch (e) {}
 						});
 					});
 				});
-				[
-					'json',
-					'js',
-				].forEach((prop) => {
-					if (site[prop]) Object.keys(site[prop]).forEach((i) => {
-						try {
-							fs.accessSync(`./src/${site[prop][i]}.${prop}`);
-							if (Number.isNaN(Number.parseInt(i, 10))) {
-								requiredFiles[i] = `${site[prop][i]}.${prop}`;
-							} else {
-								requiredFiles.push(`${site[prop][i]}.${prop}`);
-							}
-						} catch (e) {}
-					});
+
+				// Import JSON Files
+				if (site.json) Object.keys(site.json).forEach((i) => {
+					try {
+						fs.accessSync(`./src/${site.json[i]}`);
+						requires += `json.${i} = require('../src/${site.json[i]}');\n`;
+					} catch (e) {}
 				});
-				let requires = 'const json = {};\n';
-				Object.keys(requiredFiles).forEach((i) => {
-					if (Number.isNaN(Number.parseInt(i, 10))) {
-						requires += `json.${i} = `;
-					}
-					requires += `require('../src/${requiredFiles[i]}');\n`;
+
+				// Import JavaScript Modules
+				if (site.import) Object.keys(site.import).forEach((i) => {
+					try {
+						fs.accessSync(`./src/${site.import[i]}`);
+						requires += `const ${i} = require('../src/${site.import[i]}');\n`;
+					} catch (e) {}
 				});
-				return `const modules = ${JSON.stringify(site.modules, null, '\t')};\n${requires}`;
+
+				// Import Other JavaScript Files
+				if (site.js) Object.keys(site.js).forEach((i) => {
+					try {
+						fs.accessSync(`./src/${site.js[i]}`);
+						requires += `require('../src/${site.js[i]}');\n`;
+					} catch (e) {}
+				});
+
+				return requires;
 			},
 			options:{
 				notReplaced: false,
@@ -727,7 +729,7 @@ a:link,\na:visited {\n\tcolor: dodgerblue;\n}\n`;
 				return;
 			}
 			const str = `/* app.json */
-// import Litedom from 'res/litedom.es.js';
+// import Litedom from './../www/res/litedom.es.js';
 yodasws.page('home').setRoute({
 	template: 'pages/home.html',
 	route: '/',
@@ -746,8 +748,6 @@ yodasws.page('home').setRoute({
 				components:[
 				],
 				sections:[
-				],
-				modules:[
 				],
 				pages:[
 				],
