@@ -1,0 +1,48 @@
+[y-page='pageGalaxy'] {
+	canvas {
+		$width: 100%;
+		display: block;
+		width: $width;
+		height: calc(#{$width} * 3 / 4);
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+	form {
+		display: flex;
+		flex-flow: row wrap;
+
+		> section {
+			width: 50%;
+		}
+	}
+
+	section {
+		display: flex;
+		flex-flow: column nowrap;
+		align-content: center;
+		align-items: center;
+
+		&[hidden] {
+			display: none;
+		}
+
+		> label {
+			display: block;
+			width: 100%;
+			white-space: nowrap;
+			text-align: center;
+		}
+	}
+
+	input[type="range"] {
+		width: calc(90% - 2em);
+	}
+
+	output {
+		display: inline-block;
+		vertical-align: top;
+		text-align: right;
+		min-width: 2em;
+	}
+}

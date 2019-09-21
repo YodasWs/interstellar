@@ -5,8 +5,7 @@
 const matrix = require('./matrix.js');
 console.log('matrix:', matrix);
 
-const WebGL = (function() {
-
+module.exports = (function() {
 	let S;
 	let gl;
 	let programInfo;
@@ -20,9 +19,8 @@ const WebGL = (function() {
 		shaderProgram = initShaderProgram(gl);
 
 		// Collect all the info needed to use the shader program.
-		// Look up which attributes our shader program is using
-		// for aVertexPosition, aVevrtexColor and also
-		// look up uniform locations.
+		// attribLocations are different for each vertex
+		// uniformLocations apply equally to every vertex
 		programInfo = {
 			program: shaderProgram,
 			attribLocations: {
@@ -35,6 +33,8 @@ const WebGL = (function() {
 				cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
 				normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
 				dLightMatrix: gl.getUniformLocation(shaderProgram, 'uLightMatrix'),
+				ambientLight: gl.getUniformLocation(shaderProgram, 'uAmbientLight'),
+				dLightColor: gl.getUniformLocation(shaderProgram, 'uDLightColor'),
 			},
 		};
 	};
@@ -42,6 +42,8 @@ const WebGL = (function() {
 	let cameraMatrix = matrix.flatten(matrix.identity(4));
 	let normalMatrix = matrix.flatten(matrix.identity(4));
 	let dLightMatrix = matrix.flatten(matrix.identity(3));
+	let ambientLight = [0.5, 0.5, 0.5];
+	let dLightColor = [0.3, 0.7, 0.3];
 
 //
 // Initialize a shader program, so WebGL knows how to draw our data
@@ -50,14 +52,20 @@ function initShaderProgram(gl) {
 	// Vertex shader program
 	const vsSource = `
 		attribute vec4 aVertexPosition;
-		attribute vec4 aVertexColor;
+		attribute vec3 aVertexColor;
 		uniform mat4 uProjectionMatrix;
 		uniform mat4 uCameraMatrix;
 		uniform mat4 uNormalMatrix;
-		varying lowp vec4 vColor;
+		varying highp vec4 vColor;
 
 		uniform mat3 uLightMatrix;
 		varying highp vec3 vDirectionalVector;
+
+		uniform vec3 uAmbientLight;
+		varying highp vec3 vAmbientLight;
+
+		uniform vec3 uDLightColor;
+		varying highp vec3 vDLightColor;
 
 		attribute vec3 aVertexNormal;
 		varying highp vec3 vTransformedNormal;
@@ -66,10 +74,12 @@ function initShaderProgram(gl) {
 			// Each Point's Projected Position
 			gl_Position = uProjectionMatrix * uCameraMatrix * aVertexPosition;
 
-			vColor = aVertexColor;
+			vColor = vec4(aVertexColor, 1.0);
+			vAmbientLight = uAmbientLight;
+			vDLightColor = uDLightColor;
 
 			// Undo Camera Rotation to keep Lighting in constant position
-			vTransformedNormal = normalize(mat3(uNormalMatrix) * aVertexNormal);
+			vTransformedNormal = mat3(uNormalMatrix) * aVertexNormal;
 
 			vDirectionalVector = normalize(uLightMatrix * vec3(0, 0, 1));
 		}
@@ -78,18 +88,17 @@ function initShaderProgram(gl) {
 	// Fragment shader program
 	const fsSource = `
 		varying highp vec3 vLighting;
-		varying lowp vec4 vColor;
+		varying highp vec4 vColor;
 		varying highp vec3 vTransformedNormal;
 		varying highp vec3 vDirectionalVector;
-
-		highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-		highp vec3 directionalLightColor = vec3(1, 1, 1);
+		varying highp vec3 vAmbientLight;
+		varying highp vec3 vDLightColor;
 
 		void main(void) {
 			// Directional Light
 			highp float directional = max(dot(vTransformedNormal.xyz, vDirectionalVector), 0.0);
 			// Apply Lighting on Vertex's Color
-			highp vec3 vLighting = ambientLight + (directionalLightColor * directional);
+			highp vec3 vLighting = vAmbientLight + (vDLightColor * directional);
 			gl_FragColor = vColor * vec4(vLighting, 1.0);
 		}
 	`;
@@ -171,7 +180,7 @@ function drawScene(bufferData) {
 			{
 				array: buffer.pointColors,
 				attrib: 'vertexColor',
-				numBytes: 4,
+				numBytes: 3,
 			},
 			// Vertices
 			{
@@ -207,6 +216,8 @@ function drawScene(bufferData) {
 		gl.uniformMatrix4fv(programInfo.uniformLocations.cameraMatrix, false, cameraMatrix);
 		gl.uniformMatrix3fv(programInfo.uniformLocations.dLightMatrix, false, dLightMatrix);
 		gl.uniformMatrix4fv(programInfo.uniformLocations.normalMatrix, false, normalMatrix);
+		gl.uniform3fv(programInfo.uniformLocations.ambientLight, ambientLight);
+		gl.uniform3fv(programInfo.uniformLocations.dLightColor, dLightColor);
 
 		// Draw!
 		gl.drawElements(buffer.drawType, buffer.indices.length, gl.UNSIGNED_SHORT, 0);
@@ -226,10 +237,6 @@ function rotateCamera(x, y, z) {
 	normalMatrix = matrix.flatten(matrix.inverseTranspose(cameraMatrix));
 }
 
-function rotateLight(x, y, z) {
-	dLightMatrix = matrix.flatten(matrix.axonometric(x, y, z));
-}
-
 function lookAt(eye, center, up) {
 	cameraMatrix = matrix.flatten(matrix.lookAt(eye, center, up));
 	normalMatrix = matrix.flatten(matrix.inverseTranspose(cameraMatrix));
@@ -241,7 +248,15 @@ function zoom(z) {
 
 return {
 	rotateCamera,
-	rotateLight,
+	rotateLight(x, y, z) {
+		dLightMatrix = matrix.flatten(matrix.axonometric(x, y, z));
+	},
+	setAmbientLight(color) {
+		ambientLight = color;
+	},
+	setSpotlightColor(color) {
+		dLightColor = color;
+	},
 	drawScene,
 	lookAt,
 	init,

@@ -2,15 +2,10 @@
 	"name": "interstellar",
 	"components": [],
 	"sections": [],
-	"import": {
-		"matrix": "js/matrix.js"
-	},
-	"pages": [],
-	"json": {
-		"galaxy": "js/galaxy.json",
-		"skills": "js/skills.json"
-	},
-	"js": [
-		"js/webgl.js"
+	"pages": [
+		{
+			"path": "galaxy",
+			"module": "pageGalaxy"
+		}
 	]
 }
