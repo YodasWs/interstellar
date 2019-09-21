@@ -338,48 +338,39 @@ const colors = [
 	[a0 / ff, a0 / ff, ff / ff, 1], // blue
 ];
 
+const multiplier = 80;
+
 const galaxy = require('./galaxy.json');
-
-const sol = new gfx.Sphere(100, [
-	ff / ff,
-	ff / ff,
-	ff / ff,
-]);
-gfx.addShapes(sol);
-sol.translate(0, 0, 0);
-
-/*
-const multiplier = 100;
-
-const halo = new Array(2).fill(0).map(() => new gfx.Disc(10 * multiplier, [
-	Number.parseInt('2e', 16) / ff,
-	Number.parseInt('8b', 16) / ff,
-	Number.parseInt('57', 16) / ff,
-	1.0,
-]));
-halo[0].translate(0, 0, 0.01);
-halo[1].translate(0, 0, -0.01);
-halo[1].rotate(0, 180, 0);
-gfx.addShapes(...halo);
-
+console.log('galaxy:', galaxy);
 galaxy.forEach((star, i) => {
-	if (i > 2) return;
-	const sol = new gfx.Sphere(20, [
+	if (i > 5) return;
+	const sol = new gfx.Sphere(10, [
 		ff / ff,
 		ff / ff,
-		ff / ff,
+		0 / ff,
 	]);
-	gfx.addShapes(sol);
-	const α = (galaxy[i].α[0] + galaxy[i].α[1] / 60 + galaxy[i].α[2] / 60 / 60) / 180 * Math.PI;
-	const δ = (galaxy[i].δ[0] + galaxy[i].δ[1] / 60 + galaxy[i].δ[2] / 60 / 60) / 180 * Math.PI;
-	const d = galaxy[i].d * multiplier;
+	const α = (star.α[0] + star.α[1] / 60 + star.α[2] / 60 / 60) / 12 * Math.PI;
+	const δ = (star.δ[0] + star.δ[1] / 60 + star.δ[2] / 60 / 60) / 180 * Math.PI;
+	const d = star.d * multiplier;
 console.log('Sam, α:', α);
 console.log('Sam, δ:', δ);
-	const x = d * Math.sin(δ) * Math.cos(α);
-	const y = d * Math.sin(δ) * Math.sin(α);
-	const z = d * Math.cos(δ);
+	const x = d * Math.cos(δ) * Math.cos(α);
+	const y = d * Math.cos(δ) * Math.sin(α);
+	const z = d * Math.sin(δ);
 	sol.translate(x, y, z);
+	gfx.addShapes(sol);
 });
+
+const halo = new Array(1).fill(0).map(() => new gfx.Disc(10 * multiplier, [
+	0,//Number.parseInt('2e', 16) / ff,
+	0,//Number.parseInt('8b', 16) / ff,
+	0,//Number.parseInt('57', 16) / ff,
+	0.8,
+]));
+// halo[1].rotate(0, 180, 0);
+halo[0].translate(0, 0, 0.01);
+// halo[1].translate(0, 0, -0.01);
+gfx.addShapes(...halo);
 
 /*
 const radii = {
