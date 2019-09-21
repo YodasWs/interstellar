@@ -336,19 +336,9 @@ const gfx = (function() {
 	};
 })();
 
-function rotateCamera() {
-	WebGL.rotateCamera(
-		Number.parseInt(document.getElementById('radx').value, 10),
-		Number.parseInt(document.getElementById('rady').value, 10),
-		0,
-	);
-}
-document.getElementById('radx').addEventListener('input', rotateCamera);
-document.getElementById('rady').addEventListener('input', rotateCamera);
-rotateCamera();
-
-WebGL.setAmbientLight([1, 1, 1]);
-WebGL.setSpotlightColor([0.1, 0.1, 0.1]);
+WebGL.setAmbientLight([0.5, 0.5, 0.5]);
+WebGL.setSpotlightColor([1.0, 1.0, 1.0]);
+WebGL.rotateSpotlight(0, 90, 0);
 
 function zoom() {
 	WebGL.zoom(
@@ -378,12 +368,11 @@ const colors = [
 	[a0 / ff, a0 / ff, ff / ff, 1], // blue
 ];
 
-const multiplier = 80;
+const multiplier = 40;
 
 const galaxy = require('./galaxy.json');
 console.log('galaxy:', galaxy);
 galaxy.forEach((star, i) => {
-	if (i > 5) return;
 	const sol = new gfx.Sphere({
 		r: 10,
 		color: [
@@ -406,14 +395,15 @@ console.log('Sam, δ:', δ);
 });
 
 const planeColor = [
-	0.1,//Number.parseInt('2e', 16) / ff,
-	0.1,//Number.parseInt('8b', 16) / ff,
-	0.1,//Number.parseInt('57', 16) / ff,
-	0.6,
-]
+	0.0,//Number.parseInt('2e', 16) / ff,
+	0.0,//Number.parseInt('8b', 16) / ff,
+	0.0,//Number.parseInt('57', 16) / ff,
+	0.9,
+];
+const max = 17;
 
 const halo = new Array(2).fill(0).map(() => new gfx.Disc({
-	r: 10 * multiplier,
+	r: max * multiplier,
 	color: planeColor,
 	n: 40,
 }));
@@ -423,7 +413,7 @@ halo[1].rotate(0, 180, 0);
 gfx.addShapes(...halo);
 
 const ring = new Array(2).fill(0).map((r, i) => new gfx.Ring({
-	r: 10 * multiplier + (-1) ** (i % 2) * 0.01 + 1,
+	r: max * multiplier + (-1) ** (i % 2) * 0.01 + 1,
 	thickness: 5,
 	color: planeColor,
 	inward: i % 2 === 0,
@@ -431,126 +421,6 @@ const ring = new Array(2).fill(0).map((r, i) => new gfx.Ring({
 }));
 console.log('ring:', ring);
 gfx.addShapes(...ring);
-
-/*
-const radii = {
-	scale: 200,
-	moonScale: 5,
-	moonOrbit: 385 * 1000,
-	earth: 6371,
-	moon: 1731.1,
-};
-const moonDistance = radii.scale * radii.moonScale * 1.5;
-
-const earth = new gfx.Sphere(radii.scale, colors[3]);
-gfx.addShapes(earth);
-
-const moon = new gfx.Sphere(radii.scale * radii.moonScale / 8, colors[5]);
-gfx.addShapes(moon);
-moon.translate(moonDistance, 0, 0);
-
-const moonOrbit = new Array(2).fill(0).map((f, i) => new gfx[i < 2 ? 'Ring' : 'Circle'](
-	moonDistance + (-1) ** (i % 2) * 0.01,
-	radii.scale / 10,
-	colors[0],
-	!i,
-));
-gfx.addShapes(...moonOrbit);
-moonOrbit.forEach((c, i) => {
-	// c.rotate(0, 36, 0);
-});
-
-/*
-const cube = new Array(6).fill(0).map((f, i) => new gfx.Square(
-	-100,
-	-100,
-	200,
-	200,
-	colors[i],
-));
-
-cube.forEach((face, i) => {
-	const θ = new Array(3).fill(0);
-	θ[i % 3] = 90;
-
-	switch (i) {
-		case 1:
-		case 2:
-		case 3:
-			θ[1] += 180;
-			break;
-		case 2:
-		case 5:
-			θ[2] += 180;
-	}
-	face.rotate(...θ);
-
-	const translation = new Array(3).fill(0);
-	translation[(i + 2) % 3] = (-1) ** (i % 2) * 100;
-	face.translate(...translation);
-});
-gfx.addShapes(...cube);
-const cone = new Array(2).fill(0).map((z, i) => new gfx.Cone(250, 90, colors[i * 3], !i));
-cone.forEach((c, i) => {
-	c.rotate(0, 0, 0);
-	c.translate(0, 0, (-1) ** (i % 2) * 10);
-});
-gfx.addShapes(...cone);
-/**/
-
-/*
-const halo = new Array(2).fill(0).map((z, i) => new gfx.Ring(250 + (-1) ** (i % 2) * 0.01, 10, [
-	Number.parseInt('2e', 16) / ff,
-	Number.parseInt('8b', 16) / ff,
-	Number.parseInt('57', 16) / ff,
-	1.0,
-], !i));
-gfx.addShapes(...halo);
-/**/
-
-/*
-const halo = new Array(2).fill(0).map(() => new gfx.Circle(250, 10, [
-	Number.parseInt('2e', 16) / ff,
-	Number.parseInt('8b', 16) / ff,
-	Number.parseInt('57', 16) / ff,
-	1.0,
-]));
-halo[0].translate(0, 0, 0.01);
-halo[1].translate(0, 0, -0.01);
-halo[1].rotate(0, 180, 0);
-gfx.addShapes(...halo);
-
-[0, 1, 2].forEach((i) => {
-	const halo = new Array(2).fill(0).map(() => new gfx.Disc(250, [
-		Number.parseInt('2e', 16) / ff,
-		Number.parseInt('8b', 16) / ff,
-		Number.parseInt('57', 16) / ff,
-		1.0,
-	]));
-
-	switch (i) {
-		case 0:
-			halo[0].translate(0, 0, 0.01);
-			halo[1].translate(0, 0, -0.01);
-			halo[1].rotate(0, 180, 0);
-			break;
-		case 1:
-			halo[0].translate(0.01, 0, 0);
-			halo[1].translate(-0.01, 0, 0);
-			halo[0].rotate(0, 90, 0);
-			halo[1].rotate(0, 270, 0);
-			break;
-		case 2:
-			halo[0].translate(0, 0.01, 0);
-			halo[1].translate(0, -0.01, 0);
-			halo[0].rotate(0, 0, 90);
-			halo[1].rotate(0, 0, 270);
-			break;
-	}
-
-	gfx.addShapes(...halo);
-});
-/**/
 
 (() => {
 	const canvas = document.querySelector('canvas');
