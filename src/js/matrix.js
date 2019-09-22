@@ -31,7 +31,7 @@ const Matrix = (function() {
 
 		add(m1, m2) {
 			if (m1.length !== m2.length || m1[0].length !== m2[0].length) {
-				console.log('Error! Matrices must be same size!');
+				console.error('Error! Matrices must be same size!');
 				return;
 			}
 
@@ -51,7 +51,7 @@ const Matrix = (function() {
 			}
 
 			if (m1[0].length !== m2.length) {
-				console.log('Error! Matrices are incorrect size!');
+				console.error('Error! Matrices are incorrect size!');
 				return;
 			}
 
@@ -80,7 +80,7 @@ const Matrix = (function() {
 		if (v1[0] instanceof Array) v1 = basicOperations.flatten(v1);
 		if (v2[0] instanceof Array) v2 = basicOperations.flatten(v2);
 		if (v1.length !== v2.length) {
-			console.log('Error! Vectors must be same size!');
+			console.error('Error! Vectors must be same size!');
 			return;
 		}
 		return v1.reduce((sum, c, i) => sum + v1[i] * v2[i], 0);
@@ -183,8 +183,8 @@ const Matrix = (function() {
 		rotation,
 
 		projection(point) {
-			const d = basicOperations.flatten(
-				basicOperations.multiply(
+			const d = this.flatten(
+				this.multiply(
 					axonometric(
 						Number.parseInt(document.getElementById('radx').value, 10),
 						Number.parseInt(document.getElementById('rady').value, 10),
