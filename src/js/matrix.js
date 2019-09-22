@@ -4,8 +4,7 @@ const Matrix = (function() {
 	const x = 0, y = 1, z = 2;
 	const EPSILON = 0.000001;
 
-	function Matrix(camera = [0, 0, 1]) {
-		this.camera = camera;
+	function Matrix() {
 	}
 
 	const create = (n, m) => new Array(n).fill(0).map(r => new Array(m).fill(0));
@@ -53,6 +52,10 @@ const Matrix = (function() {
 			if (m1[0].length !== m2.length) {
 				console.error('Error! Matrices are incorrect size!');
 				return;
+			}
+
+			if (!(m2[0] instanceof Array)) {
+				m2 = form2dCol(m2);
 			}
 
 			// Matrix multiplication!
@@ -143,6 +146,7 @@ const Matrix = (function() {
 	// Rotate about a vector http://ksuweb.kennesaw.edu/~plaval/math4490/rotgen.pdf
 	const rotateAbout = (θ, ...u) => {
 		θ *= Math.PI / 180;
+		u = basicOperations.flatten(u);
 		const t = 1 - Math.cos(θ);
 		const c = Math.cos(θ);
 		const s = Math.sin(θ);
@@ -210,25 +214,9 @@ const Matrix = (function() {
 
 		toUnitVector(u) {
 			if (u[0] instanceof Array) u = this.flatten(u);
-			return this.multiply(u, 1 / Math.hypot(u));
-		},
-
-		projection(point) {
-			const d = this.flatten(
-				this.multiply(
-					axonometric(
-						Number.parseInt(document.getElementById('radx').value, 10),
-						Number.parseInt(document.getElementById('rady').value, 10),
-						Number.parseInt(document.getElementById('radz').value, 10),
-					),
-					form2dCol(point),
-				),
-			);
-			return [
-				[d[x] / this.camera[z] + this.camera[x]],
-				[d[y] / this.camera[z] + this.camera[y]],
-				[d[z] / this.camera[z] + this.camera[z]],
-			];
+			const h = Math.hypot(...u);
+			if (!h) return new Array(u.length).fill(0);
+			return this.multiply(u, 1 / h);
 		},
 
 		inverseTranspose(m) {
@@ -300,74 +288,52 @@ const Matrix = (function() {
 			];
 		},
 
-		// Move and point camera, from glMatrix, https://github.com/toji/gl-matrix/blob/master/src/mat4.js
 		lookAt(eye, center, up) {
-			let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
-			const eyex = eye[x];
-			const eyey = eye[y];
-			const eyez = eye[z];
-			const centerx = center[x];
-			const centery = center[y];
-			const centerz = center[z];
+			const zAxis = this.toUnitVector(
+				this.add(
+					eye,
+					this.multiply(
+						center,
+						-1,
+					),
+				),
+			);
 
-			if (Math.abs(eyex - centerx) < EPSILON &&
-				Math.abs(eyey - centery) < EPSILON &&
-				Math.abs(eyez - centerz) < EPSILON) {
-				return basicOperations.identity(4);
+			if (Math.hypot(zAxis) < EPSILON) {
+				console.error('Eye and Center cannot be the same point!');
+				return {
+					x: [1, 0, 0],
+					y: [0, 1, 0],
+					z: [0, 0, 1],
+					rotation: this.identity(4),
+				};
 			}
 
-			z0 = eyex - centerx;
-			z1 = eyey - centery;
-			z2 = eyez - centerz;
-			len = Math.hypot(z0, z1, z2);
-			z0 /= len;
-			z1 /= len;
-			z2 /= len;
+			const xAxis = this.toUnitVector(
+				this.crossProduct(
+					up,
+					zAxis,
+				),
+			);
 
-			const upx = up[x];
-			const upy = up[y];
-			const upz = up[z];
+			const yAxis = this.toUnitVector(
+				this.crossProduct(
+					zAxis,
+					xAxis,
+				),
+			);
 
-			x0 = upy * z2 - upz * z1;
-			x1 = upz * z0 - upx * z2;
-			x2 = upx * z1 - upy * z0;
-			len = Math.hypot(x0, x1, x2);
-			if (!len) {
-				x0 = 0;
-				x1 = 0;
-				x2 = 0;
-			} else {
-				x0 /= len;
-				x1 /= len;
-				x2 /= len;
-			}
-
-			y0 = z1 * x2 - z2 * x1;
-			y1 = z2 * x0 - z0 * x2;
-			y2 = z0 * x1 - z1 * x0;
-
-			len = Math.hypot(y0, y1, y2);
-			if (!len) {
-				y0 = 0;
-				y1 = 0;
-				y2 = 0;
-			} else {
-				y0 /= len;
-				y1 /= len;
-				y2 /= len;
-			}
-
-			return [
-				[x0, y0, z0, 0],
-				[x1, y1, z1, 0],
-				[x2, y2, z2, 0],
-				[
-					-(x0 * eyex + x1 * eyey + x2 * eyez),
-					-(y0 * eyex + y1 * eyey + y2 * eyez),
-					-(z0 * eyex + z1 * eyey + z2 * eyez),
-					1,
-				],
-			];
+			return {
+				x: xAxis,
+				y: yAxis,
+				z: zAxis,
+				rotation: this.transpose([
+					[...xAxis, -this.dotProduct(xAxis, eye)],
+					[...yAxis, -this.dotProduct(yAxis, eye)],
+					[...zAxis, -this.dotProduct(zAxis, eye)],
+					[0, 0, 0, 1],
+				]),
+			};
 		},
 	};
 

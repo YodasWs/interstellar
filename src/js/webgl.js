@@ -237,9 +237,9 @@ function drawScene(bufferData) {
 //
 // Rotate View
 //
-function rotateCamera(x, y, z) {
+function rotateCamera(...θ) {
 	cameraMatrix = matrix.flatten([
-		...matrix.axonometric(x, y, z).map(r => r.push(0) && r),
+		...matrix.axonometric(...θ).map(r => r.push(0) && r),
 		[0, 0, 0, 1],
 	]);
 
@@ -264,8 +264,8 @@ return {
 	setSpotlightColor(color) {
 		dLightColor = color;
 	},
-	rotateSpotlight(x, y, z) {
-		dLightMatrix = matrix.flatten(matrix.axonometric(x, y, z));
+	rotateSpotlight(...θ) {
+		dLightMatrix = matrix.flatten(matrix.axonometric(...θ));
 	},
 	drawScene,
 	lookAt,
