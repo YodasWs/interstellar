@@ -351,10 +351,15 @@ const gfx = (function() {
 		},
 
 		draw(now) {
-			WebGL.rotateCamera(
-				45,
-				(now / 50) % 360,
-				0,
+			const diff = now - start;
+
+			WebGL.lookAt(
+				matrix.flatten(matrix.multiply(
+					matrix.rotateAbout((-diff / 50) % 360, lookAt.y),
+					lookAt.z,
+				)), // camera position
+				[0, 0, 0], // center
+				lookAt.y, // up
 			);
 			const bufferData = [];
 			shapes.forEach((shape) => {
@@ -444,7 +449,7 @@ galaxy.forEach((point, i) => {
 				0,
 			);
 			ray.rotate(...center);
-			gfx.addShapes(ray);
+			// gfx.addShapes(ray);
 			return;
 		}
 
@@ -461,7 +466,7 @@ galaxy.forEach((point, i) => {
 				0,
 			);
 			ray.rotate(...pole);
-			gfx.addShapes(ray);
+			// gfx.addShapes(ray);
 			return;
 		}
 
@@ -479,7 +484,7 @@ const max = 20;
 const halo = new gfx.Disc({
 	r: max * multiplier,
 	color: planeColor,
-	n: 40,
+	n: 20,
 });
 gfx.addShapes(halo);
 
@@ -488,7 +493,7 @@ const ring = new gfx.Ring({
 	thickness: 10,
 	color: planeColor,
 	inward: false,
-	n: 80,
+	n: 20,
 });
 gfx.addShapes(ring);
 
@@ -510,6 +515,37 @@ const n = matrix.crossProduct(c, cp);
 halo.rotateTo(...n);
 ring.rotateTo(...n);
 
+[
+	c,
+	cp,
+	n,
+].forEach((v, i) => {
+	const ray = new gfx.Tube({
+		r: 1,
+		l: max * multiplier,
+		color: new Array(4).fill(0).map((zero, j) => {
+			if (i === j) return 1;
+			if (j === 3) return 1;
+			return 0;
+		}),
+		n: 4,
+		m: 1,
+	});
+	ray.rotateTo(...v);
+	gfx.addShapes(ray);
+});
+
+const start = performance.now();
+
+const lookAt = matrix.lookAt(
+	matrix.flatten(matrix.multiply(
+		matrix.rotateAbout(-45, cp),
+		c,
+	)),
+	[0, 0, 0],
+	n,
+);
+
 (() => {
 	const canvas = document.querySelector('canvas');
 
@@ -519,7 +555,10 @@ ring.rotateTo(...n);
 		return;
 	}
 
+
 	WebGL.init(canvas, [0, 0, 0, 1]);
+
+	WebGL.setCameraMatrix(lookAt.rotation);
 
 	// Draw the scene repeatedly
 	requestAnimationFrame(gfx.draw);

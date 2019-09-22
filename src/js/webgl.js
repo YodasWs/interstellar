@@ -248,7 +248,12 @@ function rotateCamera(...θ) {
 }
 
 function lookAt(eye, center, up) {
-	cameraMatrix = matrix.flatten(matrix.lookAt(eye, center, up));
+	normalMatrix = matrix.flatten(matrix.lookAt(eye, center, up).rotation);
+	cameraMatrix = matrix.flatten(matrix.inverseTranspose(normalMatrix));
+}
+
+function setCameraMatrix(camera) {
+	cameraMatrix = matrix.flatten(camera);
 	normalMatrix = matrix.flatten(matrix.inverseTranspose(cameraMatrix));
 }
 
@@ -267,6 +272,7 @@ return {
 	rotateSpotlight(...θ) {
 		dLightMatrix = matrix.flatten(matrix.axonometric(...θ));
 	},
+	setCameraMatrix,
 	drawScene,
 	lookAt,
 	init,
