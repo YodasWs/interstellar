@@ -66,6 +66,80 @@ const Matrix = (function() {
 		},
 	};
 
+	const crossProduct = (v1, v2) => {
+		if (v1[0] instanceof Array) v1 = basicOperations.flatten(v1);
+		if (v2[0] instanceof Array) v2 = basicOperations.flatten(v2);
+		return [
+			v1[y] * v2[z] - v1[z] * v2[y],
+			v1[z] * v2[x] - v1[x] * v2[z],
+			v1[x] * v2[y] - v1[y] * v2[x],
+		];
+	};
+
+	const dotProduct = (v1, v2) => {
+		if (v1[0] instanceof Array) v1 = basicOperations.flatten(v1);
+		if (v2[0] instanceof Array) v2 = basicOperations.flatten(v2);
+		if (v1.length !== v2.length) {
+			console.log('Error! Vectors must be same size!');
+			return;
+		}
+		return v1.reduce((sum, c, i) => sum + v1[i] * v2[i], 0);
+	};
+
+	const rotation = (...θ) => {
+		θ = θ.map(a => a * Math.PI / 180);
+		const X = [
+			[1, 0, 0],
+			[0, Math.cos(θ[z]), Math.sin(θ[z])],
+			[0, -Math.sin(θ[z]), Math.cos(θ[z])],
+		];
+		const Y = [
+			[Math.cos(θ[y]), 0, Math.sin(θ[y])],
+			[0, 1, 0],
+			[-Math.sin(θ[y]), 0, Math.cos(θ[y])],
+		];
+		const Z = [
+			[Math.cos(θ[x]), Math.sin(θ[x]), 0],
+			[-Math.sin(θ[x]), Math.cos(θ[x]), 0],
+			[0, 0, 1],
+		];
+		return basicOperations.multiply(
+			basicOperations.multiply(Z, Y),
+			X,
+		);
+	};
+
+	// Rotate onto given vector
+	const rotateTo = (...point) => {
+		const v = crossProduct(
+			[0, 0, 1],
+			point,
+		);
+		const s = Math.hypot(...v);
+		const c = dotProduct(
+			[0, 0, 1],
+			point,
+		);
+		const vx = [
+			[0, -v[z], v[y]],
+			[v[z], 0, -v[x]],
+			[-v[y], v[x], 0],
+		];
+		return basicOperations.add(
+			basicOperations.identity(3),
+			basicOperations.add(
+				vx,
+				basicOperations.multiply(
+					basicOperations.multiply(
+						vx,
+						vx,
+					),
+					1 / (1 + c),
+				),
+			),
+		);
+	};
+
 	const axonometric = (...θ) => {
 		θ = θ.map(a => a * Math.PI / 180);
 		const X = [
@@ -101,8 +175,12 @@ const Matrix = (function() {
 		create,
 		isometric,
 		axonometric,
+		crossProduct,
+		dotProduct,
 		form2dCol,
 		form2dRow,
+		rotateTo,
+		rotation,
 
 		projection(point) {
 			const d = basicOperations.flatten(
@@ -119,16 +197,6 @@ const Matrix = (function() {
 				[d[x] / this.camera[z] + this.camera[x]],
 				[d[y] / this.camera[z] + this.camera[y]],
 				[d[z] / this.camera[z] + this.camera[z]],
-			];
-		},
-
-		crossProduct(v1, v2) {
-			if (v1[0] instanceof Array) v1 = basicOperations.flatten(v1);
-			if (v2[0] instanceof Array) v2 = basicOperations.flatten(v2);
-			return [
-				v1[y] * v2[z] - v1[z] * v2[y],
-				v1[z] * v2[x] - v1[x] * v2[z],
-				v1[x] * v2[y] - v1[y] * v2[x],
 			];
 		},
 

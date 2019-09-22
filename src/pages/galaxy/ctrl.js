@@ -76,29 +76,13 @@ const gfx = (function() {
 			return this;
 		},
 
-		rotate(yaw, pitch, roll) {
-			yaw *= Math.PI / 180;
-			pitch *= Math.PI / 180;
-			roll *= Math.PI / 180;
-			const x = [
-				[1, 0, 0],
-				[0, Math.cos(roll), Math.sin(roll)],
-				[0, -Math.sin(roll), Math.cos(roll)],
-			];
-			const y = [
-				[Math.cos(pitch), 0, Math.sin(pitch)],
-				[0, 1, 0],
-				[-Math.sin(pitch), 0, Math.cos(pitch)],
-			];
-			const z = [
-				[Math.cos(yaw), Math.sin(yaw), 0],
-				[-Math.sin(yaw), Math.cos(yaw), 0],
-				[0, 0, 1],
-			];
-			this.rotation = matrix.multiply(
-				matrix.multiply(z, y),
-				x,
-			);
+		rotate(...θ) {
+			this.rotation = matrix.rotation(...θ);
+			this.renderedPoints = [];
+		},
+
+		rotateTo(...point) {
+			this.rotation = matrix.rotateTo(...point);
 			this.renderedPoints = [];
 		},
 
@@ -276,7 +260,6 @@ const gfx = (function() {
 		let i = 0;
 		for (let α=0; α<=180; α+=180/n) {
 			let j = 0;
-			const k = this.points.length;
 			const m = α === 0 || α === 180 ? 1 : n;
 			for (let θ=0; θ<360; θ+=360/m) {
 				if (α !== 180 || (α === 180 && θ === 0)) {
@@ -307,6 +290,48 @@ const gfx = (function() {
 		constructor: Sphere,
 	};
 
+	function Tube({
+		r,
+		l,
+		color,
+		n = 55,
+		inward = false,
+	}) {
+		Shape.call(this, color);
+
+		this.drawType = gl.TRIANGLE_STRIP;
+		this.indices = [];
+		this.normals = [];
+		this.points = [];
+
+		let i = 0;
+		for (let α=0; α<=360; α+=360/n) {
+			this.points.push([
+				r * Math.sin(α * Math.PI / 180),
+				r * Math.cos(α * Math.PI / 180),
+				0,
+			]);
+			this.points.push([
+				r * Math.sin(α * Math.PI / 180),
+				r * Math.cos(α * Math.PI / 180),
+				l,
+			]);
+			[0, 1].forEach(() => {
+				this.normals.push([
+					(inward ? -1 : 1) * Math.sin(α * Math.PI / 180),
+					(inward ? -1 : 1) * Math.cos(α * Math.PI / 180),
+					0,
+				]);
+			});
+			this.indices.push(i++, i++);
+		}
+		this.indices.push(0, 1);
+	}
+	Tube.prototype = {
+		__proto__: Shape.prototype,
+		constructor: Tube,
+	};
+
 	return {
 		Circle,
 		Sphere,
@@ -314,6 +339,7 @@ const gfx = (function() {
 		Cone,
 		Disc,
 		Ring,
+		Tube,
 
 		addShapes(...shape) {
 			shapes.push(...shape)
@@ -369,12 +395,20 @@ const colors = [
 ];
 
 const multiplier = 40;
+const center = [];
+const pole = [];
 
 const galaxy = require('./galaxy.json');
-galaxy.forEach((star, i) => {
-	switch (star.type) {
+galaxy.forEach((point, i) => {
+	const [α, δ, d] = point.α && point.δ ? [
+		(point.α[0] + point.α[1] / 60 + point.α[2] / 60 / 60) / 12 * Math.PI,
+		(point.δ[0] + point.δ[1] / 60 + point.δ[2] / 60 / 60) / 180 * Math.PI,
+		point.d * multiplier,
+	] : [null, null, null];
+
+	switch (point.type) {
 		case 'star': {
-			const sol = new gfx.Sphere({
+			const star = new gfx.Sphere({
 				r: 5,
 				color: [
 					ff / ff,
@@ -383,16 +417,49 @@ galaxy.forEach((star, i) => {
 				],
 				n: 3,
 			});
-			const α = (star.α[0] + star.α[1] / 60 + star.α[2] / 60 / 60) / 12 * Math.PI;
-			const δ = (star.δ[0] + star.δ[1] / 60 + star.δ[2] / 60 / 60) / 180 * Math.PI;
-			const d = star.d * multiplier;
-			const x = d * Math.cos(δ) * Math.cos(α);
-			const y = d * Math.cos(δ) * Math.sin(α);
-			const z = d * Math.sin(δ);
-			sol.translate(x, y, z);
-			gfx.addShapes(sol);
+			star.translate(
+				d * Math.cos(δ) * Math.cos(α),
+				d * Math.cos(δ) * Math.sin(α),
+				d * Math.sin(δ),
+			);
+			gfx.addShapes(star);
 			return;
 		}
+
+		case 'center': {
+			const ray = new gfx.Tube({
+				r: 1,
+				l: point.d,
+				color: [0, 1, 0, 1],
+				n: 4,
+			});
+			center.push(
+				(point.α[0] + point.α[1] / 60 + point.α[2] / 60 / 60) / 12 * 180,
+				point.δ[0] + point.δ[1] / 60 + point.δ[2] / 60 / 60,
+				0,
+			);
+			ray.rotate(...center);
+			gfx.addShapes(ray);
+			return;
+		}
+
+		case 'pole': {
+			const ray = new gfx.Tube({
+				r: 1,
+				l: point.d,
+				color: [1, 1, 0, 1],
+				n: 4,
+			});
+			pole.push(
+				(point.α[0] + point.α[1] / 60 + point.α[2] / 60 / 60) / 12 * 180,
+				point.δ[0] + point.δ[1] / 60 + point.δ[2] / 60 / 60,
+				0,
+			);
+			ray.rotate(...pole);
+			gfx.addShapes(ray);
+			return;
+		}
+
 	}
 });
 
@@ -409,6 +476,8 @@ const halo = new Array(2).fill(0).map(() => new gfx.Disc({
 	color: planeColor,
 	n: 40,
 }));
+halo[0].rotate(...center);
+// halo[1].rotate(...center);
 halo[1].translate(0, 0, 0.02);
 halo[1].rotate(0, 180, 0);
 gfx.addShapes(halo[0]);
@@ -420,7 +489,26 @@ const ring = new Array(2).fill(0).map((r, i) => new gfx.Ring({
 	inward: i % 2 === 0,
 	n: 80,
 }));
-gfx.addShapes(...ring);
+gfx.addShapes(ring[0]);
+
+ring[0].rotate(...pole);
+
+// ring[1].rotate(...center);
+
+const c = matrix.flatten(matrix.multiply(
+	matrix.rotation(...center),
+	[[0], [0], [1]],
+));
+const p = matrix.flatten(matrix.multiply(
+	matrix.rotation(...pole),
+	[[0], [0], [1]],
+));
+const cp = matrix.crossProduct(c, p);
+console.log('c', c);
+console.log('p', p);
+console.log('cp', cp);
+console.log('r', matrix.rotateTo(...cp));
+halo[0].rotateTo(...cp);
 
 (() => {
 	const canvas = document.querySelector('canvas');
