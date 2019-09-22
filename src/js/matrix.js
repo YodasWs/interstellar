@@ -140,6 +140,31 @@ const Matrix = (function() {
 		);
 	};
 
+	// Rotate about a vector http://ksuweb.kennesaw.edu/~plaval/math4490/rotgen.pdf
+	const rotateAbout = (θ, ...u) => {
+		θ *= Math.PI / 180;
+		const t = 1 - Math.cos(θ);
+		const c = Math.cos(θ);
+		const s = Math.sin(θ);
+		return [
+			[
+				t * u[x] * u[x] + c,
+				t * u[x] * u[y] - s * u[z],
+				t * u[x] * u[z] + s * u[y],
+			],
+			[
+				t * u[y] * u[x] + s * u[z],
+				t * u[y] * u[y] + c,
+				t * u[y] * u[z] - s * u[x],
+			],
+			[
+				t * u[z] * u[x] - s * u[y],
+				t * u[z] * u[y] + s * u[x],
+				t * u[z] * u[z] + c,
+			],
+		];
+	}
+
 	const axonometric = (...θ) => {
 		θ = θ.map(a => a * Math.PI / 180);
 		const X = [
@@ -179,8 +204,14 @@ const Matrix = (function() {
 		dotProduct,
 		form2dCol,
 		form2dRow,
+		rotateAbout,
 		rotateTo,
 		rotation,
+
+		toUnitVector(u) {
+			if (u[0] instanceof Array) u = this.flatten(u);
+			return this.multiply(u, 1 / Math.hypot(u));
+		},
 
 		projection(point) {
 			const d = this.flatten(

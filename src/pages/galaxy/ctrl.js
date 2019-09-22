@@ -86,6 +86,11 @@ const gfx = (function() {
 			this.renderedPoints = [];
 		},
 
+		rotateAbout(θ, ...vector) {
+			this.rotation = matrix.rotateAbout(θ, ...vector);
+			this.renderedPoints = [];
+		},
+
 		translate(x, y, z) {
 			this.translation = [x, y, z];
 			this.renderedPoints = [];
@@ -469,46 +474,41 @@ const planeColor = [
 	0.0,//Number.parseInt('57', 16) / ff,
 	0.9,
 ];
-const max = 17;
+const max = 20;
 
-const halo = new Array(2).fill(0).map(() => new gfx.Disc({
+const halo = new gfx.Disc({
 	r: max * multiplier,
 	color: planeColor,
 	n: 40,
-}));
-halo[0].rotate(...center);
-// halo[1].rotate(...center);
-halo[1].translate(0, 0, 0.02);
-halo[1].rotate(0, 180, 0);
-gfx.addShapes(halo[0]);
+});
+gfx.addShapes(halo);
 
-const ring = new Array(2).fill(0).map((r, i) => new gfx.Ring({
-	r: max * multiplier + (-1) ** (i % 2) * 0.01 + 1,
-	thickness: 5,
+const ring = new gfx.Ring({
+	r: max * multiplier + 1,
+	thickness: 10,
 	color: planeColor,
-	inward: i % 2 === 0,
+	inward: false,
 	n: 80,
-}));
-gfx.addShapes(ring[0]);
+});
+gfx.addShapes(ring);
 
-ring[0].rotate(...pole);
-
-// ring[1].rotate(...center);
-
+// Vector to Center
 const c = matrix.flatten(matrix.multiply(
 	matrix.rotation(...center),
-	[[0], [0], [1]],
+	matrix.form2dCol([0, 0, 1]),
 ));
+// Vector to Pole
 const p = matrix.flatten(matrix.multiply(
 	matrix.rotation(...pole),
-	[[0], [0], [1]],
+	matrix.form2dCol([0, 0, 1]),
 ));
+// Cross Product of Center × Pole, this is on Galactic Plane
 const cp = matrix.crossProduct(c, p);
-console.log('c', c);
-console.log('p', p);
-console.log('cp', cp);
-console.log('r', matrix.rotateTo(...cp));
-halo[0].rotateTo(...cp);
+// Cross Product of Center × cp, this is Normal to Galactic Plane
+const n = matrix.crossProduct(c, cp);
+// Rotate onto Galactic Plane
+halo.rotateTo(...n);
+ring.rotateTo(...n);
 
 (() => {
 	const canvas = document.querySelector('canvas');
