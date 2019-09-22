@@ -299,6 +299,7 @@ const gfx = (function() {
 		r,
 		l,
 		color,
+		m = 1,
 		n = 55,
 		inward = false,
 	}) {
@@ -309,27 +310,26 @@ const gfx = (function() {
 		this.normals = [];
 		this.points = [];
 
-		let i = 0;
-		for (let α=0; α<=360; α+=360/n) {
-			this.points.push([
-				r * Math.sin(α * Math.PI / 180),
-				r * Math.cos(α * Math.PI / 180),
-				0,
-			]);
-			this.points.push([
-				r * Math.sin(α * Math.PI / 180),
-				r * Math.cos(α * Math.PI / 180),
-				l,
-			]);
-			[0, 1].forEach(() => {
+		let j=0;
+		for (let d=0; d<=l; d+=l/m) {
+			let i = 0;
+			for (let α=0; α<=360; α+=360/n) {
+				this.points.push([
+					r * Math.sin(α * Math.PI / 180),
+					r * Math.cos(α * Math.PI / 180),
+					d,
+				]);
 				this.normals.push([
 					(inward ? -1 : 1) * Math.sin(α * Math.PI / 180),
 					(inward ? -1 : 1) * Math.cos(α * Math.PI / 180),
 					0,
 				]);
-			});
-			this.indices.push(i++, i++);
+				this.indices.push(j+i, n+i, j+i, n+i+j);
+				i++;
+			}
+			j++;
 		}
+
 		this.indices.push(0, 1);
 	}
 	Tube.prototype = {
