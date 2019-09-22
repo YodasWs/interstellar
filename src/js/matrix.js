@@ -134,7 +134,7 @@ const Matrix = (function() {
 						vx,
 						vx,
 					),
-					1 / (1 + c),
+					(1 - c) / (s ** 2),
 				),
 			),
 		);
