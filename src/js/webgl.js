@@ -11,7 +11,7 @@ module.exports = (function() {
 	let programInfo;
 	let shaderProgram;
 
-	const init = (canvas) => {
+	const init = (canvas, bgColor=[1, 1, 1, 1]) => {
 		gl = canvas.getContext('webgl');
 
 		// Initialize a shader program; this is where all the lighting
@@ -39,7 +39,7 @@ module.exports = (function() {
 		};
 
 		// Set Drawing Options
-		gl.clearColor(0.3, 0.3, 0.3, 1);
+		gl.clearColor(...bgColor);
 		gl.clearDepth(1);
 
 		// Depth

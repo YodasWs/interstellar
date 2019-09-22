@@ -371,27 +371,29 @@ const colors = [
 const multiplier = 40;
 
 const galaxy = require('./galaxy.json');
-console.log('galaxy:', galaxy);
 galaxy.forEach((star, i) => {
-	const sol = new gfx.Sphere({
-		r: 10,
-		color: [
-			ff / ff,
-			ff / ff,
-			0 / ff,
-		],
-		n: 4,
-	});
-	const α = (star.α[0] + star.α[1] / 60 + star.α[2] / 60 / 60) / 12 * Math.PI;
-	const δ = (star.δ[0] + star.δ[1] / 60 + star.δ[2] / 60 / 60) / 180 * Math.PI;
-	const d = star.d * multiplier;
-console.log('Sam, α:', α);
-console.log('Sam, δ:', δ);
-	const x = d * Math.cos(δ) * Math.cos(α);
-	const y = d * Math.cos(δ) * Math.sin(α);
-	const z = d * Math.sin(δ);
-	sol.translate(x, y, z);
-	gfx.addShapes(sol);
+	switch (star.type) {
+		case 'star': {
+			const sol = new gfx.Sphere({
+				r: 5,
+				color: [
+					ff / ff,
+					ff / ff,
+					0 / ff,
+				],
+				n: 3,
+			});
+			const α = (star.α[0] + star.α[1] / 60 + star.α[2] / 60 / 60) / 12 * Math.PI;
+			const δ = (star.δ[0] + star.δ[1] / 60 + star.δ[2] / 60 / 60) / 180 * Math.PI;
+			const d = star.d * multiplier;
+			const x = d * Math.cos(δ) * Math.cos(α);
+			const y = d * Math.cos(δ) * Math.sin(α);
+			const z = d * Math.sin(δ);
+			sol.translate(x, y, z);
+			gfx.addShapes(sol);
+			return;
+		}
+	}
 });
 
 const planeColor = [
@@ -407,10 +409,9 @@ const halo = new Array(2).fill(0).map(() => new gfx.Disc({
 	color: planeColor,
 	n: 40,
 }));
-halo[0].translate(0, 0, 0.01);
-halo[1].translate(0, 0, -0.01);
+halo[1].translate(0, 0, 0.02);
 halo[1].rotate(0, 180, 0);
-gfx.addShapes(...halo);
+gfx.addShapes(halo[0]);
 
 const ring = new Array(2).fill(0).map((r, i) => new gfx.Ring({
 	r: max * multiplier + (-1) ** (i % 2) * 0.01 + 1,
@@ -419,7 +420,6 @@ const ring = new Array(2).fill(0).map((r, i) => new gfx.Ring({
 	inward: i % 2 === 0,
 	n: 80,
 }));
-console.log('ring:', ring);
 gfx.addShapes(...ring);
 
 (() => {
@@ -431,7 +431,7 @@ gfx.addShapes(...ring);
 		return;
 	}
 
-	WebGL.init(canvas);
+	WebGL.init(canvas, [0, 0, 0, 1]);
 
 	// Draw the scene repeatedly
 	requestAnimationFrame(gfx.draw);
