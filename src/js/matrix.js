@@ -112,8 +112,16 @@ const Matrix = (function() {
 		);
 	};
 
+	const toUnitVector = (u) => {
+		if (u[0] instanceof Array) u = basicOperations.flatten(u);
+		const h = Math.hypot(...u);
+		if (!h) return new Array(u.length).fill(0);
+		return basicOperations.multiply(u, 1 / h);
+	};
+
 	// Rotate onto given vector
 	const rotateTo = (...point) => {
+		point = toUnitVector(point);
 		const v = crossProduct(
 			[0, 0, 1],
 			point,
