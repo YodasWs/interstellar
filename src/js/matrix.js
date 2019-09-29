@@ -1,25 +1,27 @@
 const Matrix = (function() {
-	const form2dCol = v => v.map(p => [p]);
-	const form2dRow = v => [v];
 	const x = 0, y = 1, z = 2;
 	const EPSILON = 0.000001;
 
 	function Matrix() {
 	}
 
-	const create = (n, m) => new Array(n).fill(0).map(r => new Array(m).fill(0));
+	Matrix.prototype = {
+		...Matrix.prototype,
 
-	const basicOperations = {
 		flatten: m => m.reduce((f, r) => f.concat(r), []),
+		form2dCol: v => v.map(p => [p]),
+		form2dRow: v => [v],
+
+		create: (n, m) => new Array(n).fill(0).map(r => new Array(m).fill(0)),
 
 		identity(n) {
-			const iden = create(n, n);
+			const iden = this.create(n, n);
 			iden.forEach((r, i) => r[i] = 1);
 			return iden;
 		},
 
 		transpose(m) {
-			const t = create(m[0].length, m.length);
+			const t = this.create(m[0].length, m.length);
 			m.forEach((r, i) => {
 				r.forEach((c, j) => {
 					t[j][i] = c;
@@ -55,11 +57,11 @@ const Matrix = (function() {
 			}
 
 			if (!(m2[0] instanceof Array)) {
-				m2 = form2dCol(m2);
+				m2 = this.form2dCol(m2);
 			}
 
 			// Matrix multiplication!
-			const product = create(m1.length, m2[0].length);
+			const product = this.create(m1.length, m2[0].length);
 			m1.forEach((row, i) => {
 				m2[0].forEach((a, j) => {
 					product[i][j] = m2.reduce((sum, c, k) => sum + m1[i][k] * m2[k][j], 0);
@@ -67,200 +69,163 @@ const Matrix = (function() {
 			});
 			return product;
 		},
-	};
 
-	const crossProduct = (v1, v2) => {
-		if (v1[0] instanceof Array) v1 = basicOperations.flatten(v1);
-		if (v2[0] instanceof Array) v2 = basicOperations.flatten(v2);
-		return [
-			v1[y] * v2[z] - v1[z] * v2[y],
-			v1[z] * v2[x] - v1[x] * v2[z],
-			v1[x] * v2[y] - v1[y] * v2[x],
-		];
-	};
+		isometric() {
+			return this.axonometric(
+				Math.asin(Math.tan(30 * Math.PI / 180)) * 180 / Math.PI,
+				45,
+				0,
+			);
+		},
 
-	const dotProduct = (v1, v2) => {
-		if (v1[0] instanceof Array) v1 = basicOperations.flatten(v1);
-		if (v2[0] instanceof Array) v2 = basicOperations.flatten(v2);
-		if (v1.length !== v2.length) {
-			console.error('Error! Vectors must be same size!');
-			return;
-		}
-		return v1.reduce((sum, c, i) => sum + v1[i] * v2[i], 0);
-	};
+		axonometric(θx, θy, θz, size = 3) {
+			const θ = [θx, θy, θz].map(a => a * Math.PI / 180);
+			const X = this.identity(size);
+			const Y = this.identity(size);
+			const Z = this.identity(size);
+			X[1][1] = Math.cos(θ[x]);
+			X[1][2] = Math.sin(θ[x]);
+			X[2][1] = -Math.sin(θ[x]);
+			X[2][2] = Math.cos(θ[x]);
+			Y[0][0] = Math.cos(θ[y]);
+			Y[0][2] = -Math.sin(θ[y]);
+			Y[2][0] = Math.sin(θ[y]);
+			Y[2][2] = Math.cos(θ[y]);
+			Z[0][0] = Math.cos(θ[z]);
+			Z[0][1] = Math.sin(θ[z]);
+			Z[1][0] = -Math.sin(θ[z]);
+			Z[1][1] = Math.cos(θ[z]);
+			return this.multiply(
+				this.multiply(X, Y),
+				Z,
+			);
+		},
 
-	const rotation = (...θ) => {
-		θ = θ.map(a => a * Math.PI / 180);
-		const X = [
-			[1, 0, 0],
-			[0, Math.cos(θ[z]), Math.sin(θ[z])],
-			[0, -Math.sin(θ[z]), Math.cos(θ[z])],
-		];
-		const Y = [
-			[Math.cos(θ[y]), 0, Math.sin(θ[y])],
-			[0, 1, 0],
-			[-Math.sin(θ[y]), 0, Math.cos(θ[y])],
-		];
-		const Z = [
-			[Math.cos(θ[x]), Math.sin(θ[x]), 0],
-			[-Math.sin(θ[x]), Math.cos(θ[x]), 0],
-			[0, 0, 1],
-		];
-		return basicOperations.multiply(
-			basicOperations.multiply(Z, Y),
-			X,
-		);
-	};
+		crossProduct(v1, v2) {
+			if (v1[0] instanceof Array) v1 = this.flatten(v1);
+			if (v2[0] instanceof Array) v2 = this.flatten(v2);
+			return [
+				v1[y] * v2[z] - v1[z] * v2[y],
+				v1[z] * v2[x] - v1[x] * v2[z],
+				v1[x] * v2[y] - v1[y] * v2[x],
+			];
+		},
 
-	const toUnitVector = (u) => {
-		if (u[0] instanceof Array) u = basicOperations.flatten(u);
-		const h = Math.hypot(...u);
-		if (!h) return new Array(u.length).fill(0);
-		return basicOperations.multiply(u, 1 / h);
-	};
+		dotProduct(v1, v2) {
+			if (v1[0] instanceof Array) v1 = this.flatten(v1);
+			if (v2[0] instanceof Array) v2 = this.flatten(v2);
+			if (v1.length !== v2.length) {
+				console.error('Error! Vectors must be same size!');
+				return;
+			}
+			return v1.reduce((sum, c, i) => sum + v1[i] * v2[i], 0);
+		},
 
-	// Rotate onto given vector
-	const rotateTo = (px, py, pz, size = 3) => {
-		const point = toUnitVector([px, py, pz]);
-		const v = crossProduct(
-			[0, 0, 1],
-			point,
-		);
-		const s = Math.hypot(...v);
-		const c = dotProduct(
-			[0, 0, 1],
-			point,
-		);
-		const vx = [
-			[0, -v[z], v[y]],
-			[v[z], 0, -v[x]],
-			[-v[y], v[x], 0],
-		];
-		const r = basicOperations.add(
-			basicOperations.identity(3),
-			basicOperations.add(
-				vx,
-				basicOperations.multiply(
-					basicOperations.multiply(
-						vx,
-						vx,
+		rotation(...θ) {
+			θ = θ.map(a => a * Math.PI / 180);
+			const X = [
+				[1, 0, 0],
+				[0, Math.cos(θ[z]), Math.sin(θ[z])],
+				[0, -Math.sin(θ[z]), Math.cos(θ[z])],
+			];
+			const Y = [
+				[Math.cos(θ[y]), 0, Math.sin(θ[y])],
+				[0, 1, 0],
+				[-Math.sin(θ[y]), 0, Math.cos(θ[y])],
+			];
+			const Z = [
+				[Math.cos(θ[x]), Math.sin(θ[x]), 0],
+				[-Math.sin(θ[x]), Math.cos(θ[x]), 0],
+				[0, 0, 1],
+			];
+			return this.multiply(
+				this.multiply(Z, Y),
+				X,
+			);
+		},
+
+		// Rotate about a vector http://ksuweb.kennesaw.edu/~plaval/math4490/rotgen.pdf
+		rotateAbout(θ, ux, uy, uz, size = 3) {
+			θ *= Math.PI / 180;
+			const u = [ux, uy, uz];
+			const t = 1 - Math.cos(θ);
+			const c = Math.cos(θ);
+			const s = Math.sin(θ);
+			const r = this.identity(size);
+			r[0][0] = t * u[x] * u[x] + c;
+			r[0][1] = t * u[x] * u[y] - s * u[z];
+			r[0][2] = t * u[x] * u[z] + s * u[y];
+			r[1][0] = t * u[y] * u[x] + s * u[z];
+			r[1][1] = t * u[y] * u[y] + c;
+			r[1][2] = t * u[y] * u[z] - s * u[x];
+			r[2][0] = t * u[z] * u[x] - s * u[y];
+			r[2][1] = t * u[z] * u[y] + s * u[x];
+			r[2][2] = t * u[z] * u[z] + c;
+			return r;
+			return [
+				[
+					t * u[x] * u[x] + c,
+					t * u[x] * u[y] - s * u[z],
+					t * u[x] * u[z] + s * u[y],
+				],
+				[
+					t * u[y] * u[x] + s * u[z],
+					t * u[y] * u[y] + c,
+					t * u[y] * u[z] - s * u[x],
+				],
+				[
+					t * u[z] * u[x] - s * u[y],
+					t * u[z] * u[y] + s * u[x],
+					t * u[z] * u[z] + c,
+				],
+			];
+		},
+
+		// Rotate onto given vector
+		rotateTo(px, py, pz, size = 3) {
+			const point = this.toUnitVector([px, py, pz]);
+			const v = this.crossProduct(
+				[0, 0, 1],
+				point,
+			);
+			const s = Math.hypot(...v);
+			const c = this.dotProduct(
+				[0, 0, 1],
+				point,
+			);
+			const vx = [
+				[0, -v[z], v[y]],
+				[v[z], 0, -v[x]],
+				[-v[y], v[x], 0],
+			];
+			const r = this.add(
+				this.identity(3),
+				this.add(
+					vx,
+					this.multiply(
+						this.multiply(
+							vx,
+							vx,
+						),
+						(1 - c) / (s ** 2),
 					),
-					(1 - c) / (s ** 2),
 				),
-			),
-		);
+			);
 
-		switch (size) {
-			case 3:
-				return r;
-			case 4:
-				return [
-					[...r[0], 0],
-					[...r[1], 0],
-					[...r[2], 0],
-					[0, 0, 0, 1],
-				];
-			default:
-				return matrix.identity(size);
-		}
-	};
-
-	// Rotate about a vector http://ksuweb.kennesaw.edu/~plaval/math4490/rotgen.pdf
-	const rotateAbout = (θ, ux, uy, uz, size = 3) => {
-		θ *= Math.PI / 180;
-		const u = [ux, uy, uz];
-		const t = 1 - Math.cos(θ);
-		const c = Math.cos(θ);
-		const s = Math.sin(θ);
-		const r = basicOperations.identity(size);
-		r[0][0] = t * u[x] * u[x] + c;
-		r[0][1] = t * u[x] * u[y] - s * u[z];
-		r[0][2] = t * u[x] * u[z] + s * u[y];
-		r[1][0] = t * u[y] * u[x] + s * u[z];
-		r[1][1] = t * u[y] * u[y] + c;
-		r[1][2] = t * u[y] * u[z] - s * u[x];
-		r[2][0] = t * u[z] * u[x] - s * u[y];
-		r[2][1] = t * u[z] * u[y] + s * u[x];
-		r[2][2] = t * u[z] * u[z] + c;
-		return r;
-		return [
-			[
-				t * u[x] * u[x] + c,
-				t * u[x] * u[y] - s * u[z],
-				t * u[x] * u[z] + s * u[y],
-			],
-			[
-				t * u[y] * u[x] + s * u[z],
-				t * u[y] * u[y] + c,
-				t * u[y] * u[z] - s * u[x],
-			],
-			[
-				t * u[z] * u[x] - s * u[y],
-				t * u[z] * u[y] + s * u[x],
-				t * u[z] * u[z] + c,
-			],
-		];
-	}
-
-	const axonometric = (θx, θy, θz, size = 3) => {
-		const θ = [θx, θy, θz].map(a => a * Math.PI / 180);
-		const X = basicOperations.identity(size);
-		const Y = basicOperations.identity(size);
-		const Z = basicOperations.identity(size);
-		X[1][1] = Math.cos(θ[x]);
-		X[1][2] = Math.sin(θ[x]);
-		X[2][1] = -Math.sin(θ[x]);
-		X[2][2] = Math.cos(θ[x]);
-		Y[0][0] = Math.cos(θ[y]);
-		Y[0][2] = -Math.sin(θ[y]);
-		Y[2][0] = Math.sin(θ[y]);
-		Y[2][2] = Math.cos(θ[y]);
-		Z[0][0] = Math.cos(θ[z]);
-		Z[0][1] = Math.sin(θ[z]);
-		Z[1][0] = -Math.sin(θ[z]);
-		Z[1][1] = Math.cos(θ[z]);
-		/*
-		const X = [
-			[1, 0, 0],
-			[0, Math.cos(θ[x]), Math.sin(θ[x])],
-			[0, -Math.sin(θ[x]), Math.cos(θ[x])],
-		];
-		const Y = [
-			[Math.cos(θ[y]), 0, -Math.sin(θ[y])],
-			[0, 1, 0],
-			[Math.sin(θ[y]), 0, Math.cos(θ[y])],
-		];
-		const Z = [
-			[Math.cos(θ[z]), Math.sin(θ[z]), 0],
-			[-Math.sin(θ[z]), Math.cos(θ[z]), 0],
-			[0, 0, 1],
-		];
-		/**/
-		return basicOperations.multiply(
-			basicOperations.multiply(X, Y),
-			Z,
-		);
-	};
-
-	const isometric = axonometric(
-		Math.asin(Math.tan(30 * Math.PI / 180)) * 180 / Math.PI,
-		45,
-		0,
-	);
-
-	Matrix.prototype = {
-		...Matrix.prototype,
-		...basicOperations,
-		create,
-		isometric,
-		axonometric,
-		crossProduct,
-		dotProduct,
-		form2dCol,
-		form2dRow,
-		rotateAbout,
-		rotateTo,
-		rotation,
+			switch (size) {
+				case 3:
+					return r;
+				case 4:
+					return [
+						[...r[0], 0],
+						[...r[1], 0],
+						[...r[2], 0],
+						[0, 0, 0, 1],
+					];
+				default:
+					return matrix.identity(size);
+			}
+		},
 
 		toUnitVector(u) {
 			if (u[0] instanceof Array) u = this.flatten(u);
