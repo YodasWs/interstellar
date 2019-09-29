@@ -81,13 +81,13 @@ const gfx = (function() {
 			this.renderedPoints = [];
 		},
 
-		rotateTo(...point) {
-			this.rotation = matrix.rotateTo(...point);
+		rotateTo(px, py, pz, size = 3) {
+			this.rotation = matrix.rotateTo(px, py, pz, size);
 			this.renderedPoints = [];
 		},
 
-		rotateAbout(θ, ...vector) {
-			this.rotation = matrix.rotateAbout(θ, ...vector);
+		rotateAbout(θ, vx, vy, vz, size) {
+			this.rotation = matrix.rotateAbout(θ, vx, vy, vz, size);
 			this.renderedPoints = [];
 		},
 
