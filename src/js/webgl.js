@@ -6,7 +6,7 @@ const matrix = require('./matrix.js');
 console.log('matrix:', matrix);
 
 module.exports = (function() {
-	let S;
+	let S = 5;
 	let gl;
 	let programInfo;
 	let shaderProgram;

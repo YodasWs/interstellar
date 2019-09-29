@@ -11,7 +11,7 @@ const gfx = (function() {
 	const gl = canvas.getContext('webgl');
 	if (!gl) {
 		console.error('No canvas context!');
-		return {};
+		return;
 	}
 
 	const renderShapes = [];
@@ -391,24 +391,9 @@ WebGL.setAmbientLight([0.5, 0.5, 0.5]);
 WebGL.setSpotlightColor([1.0, 1.0, 1.0]);
 WebGL.rotateSpotlight(0, 90, 0);
 
-function zoom() {
-	WebGL.zoom(
-		Number.parseInt(document.getElementById('zoom').value, 10),
-	);
-}
-document.getElementById('zoom').addEventListener('input', zoom);
-zoom();
-
-function showNumbers(e) {
-	e.target.closest('label').querySelector('output').innerText = e.target.value;
-}
-document.querySelectorAll('input[type="range"]').forEach((input) => {
-	input.addEventListener('input', showNumbers);
-});
-
-const a0 = 10 * 16 +  0;
-const f0 = 15 * 16 +  0;
-const ff = 15 * 16 + 15;
+const a0 = Number.parseInt('a0', 16);
+const f0 = Number.parseInt('f0', 16);
+const ff = Number.parseInt('ff', 16);
 
 const colors = [
 	[ff / ff, a0 / ff, ff / ff, 1], // magenta
@@ -601,24 +586,7 @@ const lookAt = matrix.lookAt(
 /**/
 
 const rotate = [75, 180, 0];
-const lookAt = {
-	x: matrix.multiply(
-		matrix.axonometric(...rotate),
-		cp,
-	),
-	y: matrix.multiply(
-		matrix.axonometric(...rotate),
-		n,
-	),
-	z: matrix.multiply(
-		matrix.axonometric(...rotate),
-		c,
-	),
-	rotation: matrix.multiply(
-		matrix.axonometric(...rotate, 4),
-		matrix.rotateTo(...c, 4),
-	),
-};
+const lookAt = {};
 
 const u = matrix.multiply(
 	matrix.rotateTo(...c),
