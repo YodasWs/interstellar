@@ -357,6 +357,7 @@ const gfx = (function() {
 		draw(now) {
 			const diff = now - start;
 
+			/*
 			WebGL.lookAt(
 				matrix.flatten(matrix.multiply(
 					matrix.rotateAbout((-diff / 50) % 360, lookAt.y),
@@ -365,6 +366,16 @@ const gfx = (function() {
 				[0, 0, 0], // center
 				lookAt.y, // up
 			);
+			/**/
+
+			WebGL.setCameraMatrix(
+				matrix.multiply(
+					matrix.rotateAbout((-diff / 50) % 360, ...lookAt.y, 4),
+					lookAt.rotation,
+				),
+			);
+			/**/
+
 			const bufferData = [];
 			shapes.forEach((shape) => {
 				bufferData.push(shape.render());
@@ -422,6 +433,7 @@ galaxy.forEach((point, i) => {
 
 	switch (point.type) {
 		case 'star': {
+			return;
 			const star = new gfx.Sphere({
 				r: 5,
 				color: [
@@ -485,12 +497,46 @@ const planeColor = [
 ];
 const max = 20;
 
+const cubes = new Array(2).fill(new Array(6).fill(0)).map((cube, i) => {
+	cube = cube.map((face, j) => {
+		face =  new gfx.Square({
+			x: 50,
+			y: 50,
+			width: -100,
+			height: -100,
+			color: [1, 1, 1, 0],
+		});
+		switch (j) {
+			case 0:
+			case 1:
+				face.rotate(0, 180 * (j % 2), 0);
+				face.translate(i === 1 ? 400 : 0, 0, 50 * (-1) ** (j % 2));
+				face.color = matrix.form2dCol([1, 1, 0, 1]);
+				break;
+			case 2:
+			case 3:
+				face.rotate(0, 90 * (-1) ** (j % 2), 0);
+				face.translate((i === 1 ? 400 : 0) + 50 * (-1) ** (j % 2), 0, 0);
+				face.color = matrix.form2dCol([1, 0, 1, 1]);
+				break;
+			case 4:
+			case 5:
+				face.rotate(0, 0, 90 * (-1) ** (j % 2));
+				face.translate(i === 1 ? 400 : 0, 50 * (-1) ** (j % 2), 0);
+				face.color = matrix.form2dCol([0, 1, 1, 1]);
+				break;
+		}
+		return face;
+	});
+	gfx.addShapes(...cube);
+});
+
 const halo = new gfx.Disc({
 	r: max * multiplier,
 	color: planeColor,
 	n: 20,
 });
-gfx.addShapes(halo);
+// gfx.addShapes(halo);
 
 const ring = new gfx.Ring({
 	r: max * multiplier + 1,
@@ -499,7 +545,7 @@ const ring = new gfx.Ring({
 	inward: false,
 	n: 20,
 });
-gfx.addShapes(ring);
+// gfx.addShapes(ring);
 
 // Vector to Center
 const c = matrix.flatten(matrix.multiply(
@@ -541,13 +587,53 @@ ring.rotateTo(...n);
 
 const start = performance.now();
 
+/*
 const lookAt = matrix.lookAt(
 	matrix.flatten(matrix.multiply(
 		matrix.rotateAbout(-45, cp),
+		// matrix.rotateAbout(0, cp),
 		c,
 	)),
 	[0, 0, 0],
 	n,
+);
+/**/
+
+const rotate = [0, 0, 0]; // [45, 35, 0];
+const lookAt = {
+	x: matrix.multiply(
+		matrix.axonometric(...rotate),
+		cp,
+	),
+	y: matrix.multiply(
+		matrix.axonometric(...rotate),
+		n,
+	),
+	z: matrix.multiply(
+		matrix.axonometric(...rotate),
+		c,
+	),
+	rotation: matrix.multiply(
+		matrix.axonometric(...rotate, 4),
+		matrix.rotateTo(...c, 4),
+	),
+};
+
+const u = matrix.multiply(
+	matrix.rotateTo(...c),
+	[0, 1, 0],
+);
+
+lookAt.rotation = matrix.multiply(
+	matrix.rotateAbout(
+		Math.acos(Math.abs(matrix.dotProduct(
+			lookAt.y,
+			u,
+		)) / Math.hypot(...lookAt.y) / Math.hypot(...u)) * 180 / Math.PI,
+		...c,
+		4,
+	),
+	lookAt.rotation,
 );
 
 (() => {
