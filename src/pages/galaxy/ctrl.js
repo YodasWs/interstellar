@@ -9,6 +9,10 @@ const matrix = require('./../../js/matrix.js');
 const gfx = (function() {
 	const canvas = document.querySelector('canvas');
 	const gl = canvas.getContext('webgl');
+	if (!gl) {
+		console.error('No canvas context!');
+		return {};
+	}
 
 	const renderShapes = [];
 	const shapes = [];
