@@ -419,7 +419,7 @@ const colors = [
 	[a0 / ff, a0 / ff, ff / ff, 1], // blue
 ];
 
-const multiplier = 40;
+const multiplier = 35;
 const center = [];
 const pole = [];
 
@@ -433,7 +433,6 @@ galaxy.forEach((point, i) => {
 
 	switch (point.type) {
 		case 'star': {
-			return;
 			const star = new gfx.Sphere({
 				r: 5,
 				color: [
@@ -493,10 +492,11 @@ const planeColor = [
 	0.0,//Number.parseInt('2e', 16) / ff,
 	0.0,//Number.parseInt('8b', 16) / ff,
 	0.0,//Number.parseInt('57', 16) / ff,
-	0.9,
+	0.75,
 ];
 const max = 20;
 
+/*
 const cubes = new Array(2).fill(new Array(6).fill(0)).map((cube, i) => {
 	cube = cube.map((face, j) => {
 		face =  new gfx.Square({
@@ -530,13 +530,13 @@ const cubes = new Array(2).fill(new Array(6).fill(0)).map((cube, i) => {
 	});
 	gfx.addShapes(...cube);
 });
+/**/
 
 const halo = new gfx.Disc({
 	r: max * multiplier,
 	color: planeColor,
 	n: 20,
 });
-// gfx.addShapes(halo);
 
 const ring = new gfx.Ring({
 	r: max * multiplier + 1,
@@ -545,7 +545,6 @@ const ring = new gfx.Ring({
 	inward: false,
 	n: 20,
 });
-// gfx.addShapes(ring);
 
 // Vector to Center
 const c = matrix.flatten(matrix.multiply(
@@ -584,6 +583,8 @@ ring.rotateTo(...n);
 	ray.rotateTo(...v);
 	gfx.addShapes(ray);
 });
+gfx.addShapes(halo);
+gfx.addShapes(ring);
 
 const start = performance.now();
 
@@ -599,7 +600,7 @@ const lookAt = matrix.lookAt(
 );
 /**/
 
-const rotate = [0, 0, 0]; // [45, 35, 0];
+const rotate = [75, 180, 0];
 const lookAt = {
 	x: matrix.multiply(
 		matrix.axonometric(...rotate),
@@ -625,16 +626,32 @@ const u = matrix.multiply(
 );
 
 lookAt.rotation = matrix.multiply(
-	matrix.rotateAbout(
-		Math.acos(Math.abs(matrix.dotProduct(
-			lookAt.y,
-			u,
-		)) / Math.hypot(...lookAt.y) / Math.hypot(...u)) * 180 / Math.PI,
-		...c,
-		4,
+	matrix.axonometric(...rotate, 4),
+	matrix.multiply(
+		matrix.rotateAbout(
+			Math.acos(Math.abs(matrix.dotProduct(
+				n,
+				u,
+			)) / Math.hypot(...n) / Math.hypot(...u)) * 180 / Math.PI,
+			...c,
+			4,
+		),
+		matrix.rotateTo(...c, 4),
 	),
-	lookAt.rotation,
 );
+
+lookAt.x = matrix.multiply(
+	lookAt.rotation,
+	[1, 0, 0, 1],
+).splice(0, 3);
+lookAt.y = matrix.multiply(
+	lookAt.rotation,
+	[0, 1, 0, 1],
+).splice(0, 3);
+lookAt.z = matrix.multiply(
+	lookAt.rotation,
+	[0, 0, 1, 1],
+).splice(0, 3);
 
 (() => {
 	const canvas = document.querySelector('canvas');
