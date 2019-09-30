@@ -408,24 +408,89 @@ const multiplier = 35;
 const center = [];
 const pole = [];
 
+function map(value, from, to) {
+	return (value - from[0]) / (from[1] - from[0]) * (to[1] - to[0]) + to[0];
+}
+
+// Convert B-V Color Index to RGB
+function bvToColor(bv) {
+	// Make sure bv is within its bounds [-0.4, 2]
+	if (bv < -0.4) {
+		bv = -0.4;
+	} else if (bv > 2) {
+		bv = 2;
+	}
+
+	// Color Constants
+	const x00 = Number.parseInt('00', 16);
+	const x52 = Number.parseInt('52', 16);
+	const x9b = Number.parseInt('9b', 16);
+	const xb2 = Number.parseInt('b2', 16);
+	const xff = Number.parseInt('ff', 16);
+
+	let g = xff;
+	const greenShift = [0.4, 0.70];
+	if (bv <= greenShift[0]) {
+		g = map(bv, [-0.4, greenShift[0]], [xb2, xff]);
+	} else if (bv >= greenShift[1]) {
+		g = map(bv, [greenShift[1], 2], [xff, x52]);
+	}
+
+	const redShift = 0.20;
+	const blueShift = 0.1;
+
+	const rgb = matrix.multiply([
+		bv > redShift ? xff : map(bv, [-0.4, redShift], [x9b, xff]), // Red
+		g, // Green
+		bv < blueShift ? xff : map(bv, [blueShift, 2], [xff, x00]), // Blue
+	], 1 / xff);
+	console.log('rgb:', rgb);
+	return rgb;
+}
+
 const galaxy = require('./galaxy.json');
 galaxy.forEach((point, i) => {
-	const [α, δ, d] = point.α && point.δ ? [
+	const [α, δ] = point.α && point.δ ? [
 		(point.α[0] + point.α[1] / 60 + point.α[2] / 60 / 60) / 12 * Math.PI,
 		(point.δ[0] + point.δ[1] / 60 + point.δ[2] / 60 / 60) / 180 * Math.PI,
-		point.d * multiplier,
 	] : [null, null, null];
+	let d = point.d * multiplier;
 
 	switch (point.type) {
 		case 'star': {
+			let r = 3;
+			let color = [222 / ff, 184 / ff, 135 / ff];
+			let n = point.d === 0 ? 5 : 3;
+			if (point['b-v'] !== undefined) {
+				console.log(point.name, 'b-v', point['b-v']);
+				if (typeof point['b-v'] === 'number') {
+					color = bvToColor(point['b-v']);
+					r = point.d === 0 ? 10 : 5;
+					if (point['b-v'] < 0) {
+						r = 20;
+						n = 10;
+					}
+				}
+				if (point['b-v'] === 'red') {
+					color = [1, 0, 0];
+					r = 4;
+				}
+			}
+
+			if (d / multiplier >= 17) {
+				r = 10;
+				d = 20 * multiplier;
+				n = 3;
+			}
+
+			else if (16.5 < d / multiplier && d / multiplier < 100) {
+				return;
+			}
+
 			const star = new gfx.Sphere({
-				r: 5,
-				color: [
-					ff / ff,
-					ff / ff,
-					0 / ff,
-				],
-				n: 3,
+				color,
+				n,
+				r,
 			});
 			star.translate(
 				d * Math.cos(δ) * Math.cos(α),
@@ -440,16 +505,15 @@ galaxy.forEach((point, i) => {
 			const ray = new gfx.Tube({
 				r: 1,
 				l: point.d,
-				color: [0, 1, 0, 1],
+				color: [1, 0, 0],
 				n: 4,
 			});
 			center.push(
-				(point.α[0] + point.α[1] / 60 + point.α[2] / 60 / 60) / 12 * 180,
-				point.δ[0] + point.δ[1] / 60 + point.δ[2] / 60 / 60,
-				0,
+				17 * multiplier * Math.cos(δ) * Math.cos(α),
+				17 * multiplier * Math.cos(δ) * Math.sin(α),
+				17 * multiplier * Math.sin(δ),
 			);
-			ray.rotate(...center);
-			// gfx.addShapes(ray);
+			ray.rotateTo(...center);
 			return;
 		}
 
@@ -461,12 +525,11 @@ galaxy.forEach((point, i) => {
 				n: 4,
 			});
 			pole.push(
-				(point.α[0] + point.α[1] / 60 + point.α[2] / 60 / 60) / 12 * 180,
-				point.δ[0] + point.δ[1] / 60 + point.δ[2] / 60 / 60,
-				0,
+				17 * multiplier * Math.cos(δ) * Math.cos(α),
+				17 * multiplier * Math.cos(δ) * Math.sin(α),
+				17 * multiplier * Math.sin(δ),
 			);
-			ray.rotate(...pole);
-			// gfx.addShapes(ray);
+			ray.rotateTo(...pole);
 			return;
 		}
 
@@ -480,42 +543,6 @@ const planeColor = [
 	0.75,
 ];
 const max = 20;
-
-/*
-const cubes = new Array(2).fill(new Array(6).fill(0)).map((cube, i) => {
-	cube = cube.map((face, j) => {
-		face =  new gfx.Square({
-			x: 50,
-			y: 50,
-			width: -100,
-			height: -100,
-			color: [1, 1, 1, 0],
-		});
-		switch (j) {
-			case 0:
-			case 1:
-				face.rotate(0, 180 * (j % 2), 0);
-				face.translate(i === 1 ? 400 : 0, 0, 50 * (-1) ** (j % 2));
-				face.color = matrix.form2dCol([1, 1, 0, 1]);
-				break;
-			case 2:
-			case 3:
-				face.rotate(0, 90 * (-1) ** (j % 2), 0);
-				face.translate((i === 1 ? 400 : 0) + 50 * (-1) ** (j % 2), 0, 0);
-				face.color = matrix.form2dCol([1, 0, 1, 1]);
-				break;
-			case 4:
-			case 5:
-				face.rotate(0, 0, 90 * (-1) ** (j % 2));
-				face.translate(i === 1 ? 400 : 0, 50 * (-1) ** (j % 2), 0);
-				face.color = matrix.form2dCol([0, 1, 1, 1]);
-				break;
-		}
-		return face;
-	});
-	gfx.addShapes(...cube);
-});
-/**/
 
 const halo = new gfx.Disc({
 	r: max * multiplier,
@@ -533,12 +560,12 @@ const ring = new gfx.Ring({
 
 // Vector to Center
 const c = matrix.flatten(matrix.multiply(
-	matrix.rotation(...center),
+	matrix.rotateTo(...center),
 	matrix.form2dCol([0, 0, 1]),
 ));
 // Vector to Pole
 const p = matrix.flatten(matrix.multiply(
-	matrix.rotation(...pole),
+	matrix.rotateTo(...pole),
 	matrix.form2dCol([0, 0, 1]),
 ));
 // Cross Product of Center × Pole, this is on Galactic Plane
@@ -585,7 +612,7 @@ const lookAt = matrix.lookAt(
 );
 /**/
 
-const rotate = [75, 180, 0];
+const rotate = [75, 0, 0];
 const lookAt = {};
 
 const u = matrix.multiply(
