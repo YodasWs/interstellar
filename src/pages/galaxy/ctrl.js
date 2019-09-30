@@ -357,24 +357,23 @@ const gfx = (function() {
 		draw(now) {
 			const diff = now - start;
 
-			/*
-			WebGL.lookAt(
-				matrix.flatten(matrix.multiply(
-					matrix.rotateAbout((-diff / 50) % 360, lookAt.y),
-					lookAt.z,
-				)), // camera position
-				[0, 0, 0], // center
-				lookAt.y, // up
-			);
-			/**/
-
-			WebGL.setCameraMatrix(
-				matrix.multiply(
-					matrix.rotateAbout((-diff / 50) % 360, ...lookAt.y, 4),
-					lookAt.rotation,
-				),
-			);
-			/**/
+			if (true) {
+				WebGL.setCameraMatrix(
+					matrix.multiply(
+						matrix.rotateAbout((-diff / 50) % 360, ...lookAt.y, 4),
+						lookAt.rotation,
+					),
+				);
+			} else {
+				WebGL.lookAt(
+					matrix.flatten(matrix.multiply(
+						matrix.rotateAbout((-diff / 50) % 360, ...lookAt.y),
+						lookAt.z,
+					)), // camera position
+					[0, 0, 0], // center
+					lookAt.y, // up
+				);
+			}
 
 			const bufferData = [];
 			shapes.forEach((shape) => {
@@ -466,10 +465,6 @@ galaxy.forEach((point, i) => {
 				if (typeof point['b-v'] === 'number') {
 					color = bvToColor(point['b-v']);
 					r = point.d === 0 ? 10 : 5;
-					if (point['b-v'] < 0) {
-						r = 20;
-						n = 10;
-					}
 				}
 				if (point['b-v'] === 'red') {
 					color = [1, 0, 0];
@@ -477,13 +472,13 @@ galaxy.forEach((point, i) => {
 				}
 			}
 
-			if (d / multiplier >= 17) {
-				r = 10;
+			if (d / multiplier >= 75) {
 				d = 20 * multiplier;
 				n = 3;
+				r = 2;
 			}
 
-			else if (16.5 < d / multiplier && d / multiplier < 100) {
+			else if (16.5 < d / multiplier && d / multiplier < 75) {
 				return;
 			}
 
@@ -572,6 +567,7 @@ const p = matrix.flatten(matrix.multiply(
 const cp = matrix.crossProduct(c, p);
 // Cross Product of Center × cp, this is Normal to Galactic Plane
 const n = matrix.crossProduct(c, cp);
+
 // Rotate onto Galactic Plane
 halo.rotateTo(...n);
 ring.rotateTo(...n);

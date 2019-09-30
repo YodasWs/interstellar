@@ -304,17 +304,14 @@ const Matrix = (function() {
 		},
 
 		lookAt(eye, center, up) {
-			const zAxis = this.multiply(
-				this.toUnitVector(
-					this.add(
-						center,
-						this.multiply(
-							eye,
-							-1,
-						),
+			const zAxis = this.toUnitVector(
+				this.add(
+					center,
+					this.multiply(
+						eye,
+						-1,
 					),
 				),
-				1,
 			);
 
 			if (Math.hypot(zAxis) < EPSILON) {
