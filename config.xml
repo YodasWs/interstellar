@@ -5,6 +5,22 @@
 	<description>TBD</description>
 	<author email="interstellar@yodas.ws" href="https://github.com/YodasWs">Sam Grundman</author>
 	<author email="" href="">Peter</author>
-	<platform name="android"/>
+	<platform name="android">
+		<splash src="res/screen/android/default-ldpi.png" density="port-ldpi"/>
+		<splash src="res/screen/android/default-mdpi.png" density="port-mdpi"/>
+		<splash src="res/screen/android/default-hdpi.png" density="port-hdpi"/>
+		<splash src="res/screen/android/default-xhdpi.png" density="port-xhdpi"/>
+		<splash src="res/screen/android/default-xxhdpi.png" density="port-xxhdpi"/>
+		<splash src="res/screen/android/default-xxxhdpi.png" density="port-xxxhdpi"/>
+	</platform>
 	<platform name="windows"/>
+	<platform name="ios">
+		<splash src="res/screen/ios/default-iPhone.png" width="320" height="480"/>
+		<splash src="res/screen/ios/default-2x-iPhone.png" width="640" height="960"/>
+		<splash src="res/screen/ios/default-portrait-iPad.png" width="768" height="1024"/>
+		<splash src="res/screen/ios/default-portrait-2x-iPad.png" width="1536" height="2048"/>
+		<splash src="res/screen/ios/default-568@2x-iphone.png" width="640" height="1136"/>
+		<splash src="res/screen/ios/default-667h.png" width="750" height="1334"/>
+		<splash src="res/screen/ios/default-736h.png" width="1242" height="2208"/>
+	</platform>
 </widget>
