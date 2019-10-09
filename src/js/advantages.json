@@ -1,0 +1,674 @@
+[
+	{
+		"name": "Alertness",
+		"bonus": 2
+	},
+	{
+		"name": "Alien Upbringing",
+		"bonus": 1
+	},
+	{
+		"name": "Ally, lvl 1",
+		"bonus": 2
+	},
+	{
+		"name": "Ally, lvl 2",
+		"bonus": 3
+	},
+	{
+		"name": "Ally, lvl 3",
+		"bonus": 4
+	},
+	{
+		"name": "Ally, lvl 4",
+		"bonus": 5
+	},
+	{
+		"name": "Ambidexterity",
+		"bonus": 2
+	},
+	{
+		"name": "Athletic Ability",
+		"bonus": 2
+	},
+	{
+		"name": "Bold",
+		"bonus": 1
+	},
+	{
+		"name": "Commendation, lvl 1",
+		"bonus": 1
+	},
+	{
+		"name": "Commendation, lvl 1",
+		"bonus": 2
+	},
+	{
+		"name": "Commendation, lvl 1",
+		"bonus": 3
+	},
+	{
+		"name": "Contact, lvl 1",
+		"bonus": 1
+	},
+	{
+		"name": "Contact, lvl 2",
+		"bonus": 2
+	},
+	{
+		"name": "Contact, lvl 3",
+		"bonus": 3
+	},
+	{
+		"name": "Curious",
+		"bonus": 1
+	},
+	{
+		"name": "Department Head, lvl 1",
+		"bonus": 1
+	},
+	{
+		"name": "Department Head, lvl 2",
+		"bonus": 2
+	},
+	{
+		"name": "Department Head, lvl 3",
+		"bonus": 3
+	},
+	{
+		"name": "Department Head, lvl 4",
+		"bonus": 4
+	},
+	{
+		"name": "Double-jointed",
+		"bonus": 2
+	},
+	{
+		"name": "Eidetic Memory",
+		"bonus": 3
+	},
+	{
+		"name": "Enhanced Vision",
+		"bonus": 2
+	},
+	{
+		"name": "Engineering Aptitude",
+		"bonus": 3
+	},
+	{
+		"name": "Excellent Balance",
+		"bonus": 1
+	},
+	{
+		"name": "Excellent Chemoreception",
+		"bonus": 1
+	},
+	{
+		"name": "Excellent Hearing",
+		"bonus": 2
+	},
+	{
+		"name": "Excellent Metabolism",
+		"bonus": 1
+	},
+	{
+		"name": "Excellent Sight",
+		"bonus": 2
+	},
+	{
+		"name": "Famous Incident",
+		"bonus": 0
+	},
+	{
+		"name": "Favor Owed",
+		"bonus": 1
+	},
+	{
+		"name": "High Pain Threshold",
+		"bonus": 2
+	},
+	{
+		"name": "Innovative",
+		"bonus": 1
+	},
+	{
+		"name": "Language Ability",
+		"bonus": 2
+	},
+	{
+		"name": "Mathematical Ability",
+		"bonus": 3
+	},
+	{
+		"name": "Medical Remedy",
+		"bonus": 0
+	},
+	{
+		"name": "Mixed Species Heritage",
+		"bonus": 6
+	},
+	{
+		"name": "Multitasking",
+		"bonus": 2
+	},
+	{
+		"name": "Night Vision",
+		"bonus": 2
+	},
+	{
+		"name": "Organ Redundancy",
+		"bonus": 2
+	},
+	{
+		"name": "Patron, lvl 1",
+		"bonus": 2
+	},
+	{
+		"name": "Patron, lvl 2",
+		"bonus": 3
+	},
+	{
+		"name": "Patron, lvl 3",
+		"bonus": 4
+	},
+	{
+		"name": "Peripheral Vision",
+		"bonus": 2
+	},
+	{
+		"name": "Political Rank, lvl 1",
+		"bonus": 2
+	},
+	{
+		"name": "Political Rank, lvl 2",
+		"bonus": 3
+	},
+	{
+		"name": "Political Rank, lvl 3",
+		"bonus": 4
+	},
+	{
+		"name": "Political Rank, lvl 4",
+		"bonus": 5
+	},
+	{
+		"name": "Political Rank, lvl 5",
+		"bonus": 6
+	},
+	{
+		"name": "Promotion, lvl 0",
+		"bonus": 0
+	},
+	{
+		"name": "Promotion, lvl 1",
+		"bonus": 1
+	},
+	{
+		"name": "Promotion, lvl 2",
+		"bonus": 2
+	},
+	{
+		"name": "Promotion, lvl 3",
+		"bonus": 3
+	},
+	{
+		"name": "Promotion, lvl 4",
+		"bonus": 4
+	},
+	{
+		"name": "Promotion, lvl 5",
+		"bonus": 5
+	},
+	{
+		"name": "Promotion, lvl 6",
+		"bonus": 6
+	},
+	{
+		"name": "Quick Draw",
+		"bonus": 2
+	},
+	{
+		"name": "Rapid Healing",
+		"bonus": 1
+	},
+	{
+		"name": "Religious Rank, lvl 0",
+		"bonus": 0
+	},
+	{
+		"name": "Religious Rank, lvl 1",
+		"bonus": 1
+	},
+	{
+		"name": "Religious Rank, lvl 2",
+		"bonus": 2
+	},
+	{
+		"name": "Religious Rank, lvl 3",
+		"bonus": 3
+	},
+	{
+		"name": "Religious Rank, lvl 4",
+		"bonus": 4
+	},
+	{
+		"name": "Religious Rank, lvl 5",
+		"bonus": 5
+	},
+	{
+		"name": "Resolute",
+		"bonus": 3
+	},
+	{
+		"name": "Sense of Direction",
+		"bonus": 1
+	},
+	{
+		"name": "Sense of Time",
+		"bonus": 1
+	},
+	{
+		"name": "Sexy",
+		"bonus": 2
+	},
+	{
+		"name": "Shrewd",
+		"bonus": 1
+	},
+	{
+		"name": "Species Friend, lvl 1",
+		"bonus": 2
+	},
+	{
+		"name": "Species Friend, lvl 2",
+		"bonus": 3
+	},
+	{
+		"name": "Species Friend, lvl 3",
+		"bonus": 4
+	},
+	{
+		"name": "Species Friend, lvl 4",
+		"bonus": 5
+	},
+	{
+		"name": "Strong Will",
+		"bonus": 2
+	},
+	{
+		"name": "Tactical Genius",
+		"bonus": 3
+	},
+	{
+		"name": "Toughness",
+		"bonus": 2
+	},
+	{
+		"name": "Wealth, lvl 1",
+		"bonus": 1
+	},
+	{
+		"name": "Wealth, lvl 2",
+		"bonus": 2
+	},
+	{
+		"name": "Wealth, lvl 3",
+		"bonus": 3
+	},
+	{
+		"name": "Wealth, lvl 4",
+		"bonus": 4
+	},
+	{
+		"name": "Wealth, lvl 5",
+		"bonus": 5
+	},
+	{
+		"name": "Wealth, lvl 6",
+		"bonus": 6
+	},
+	{
+		"name": "Weapon Master, lvl 1",
+		"bonus": 2
+	},
+	{
+		"name": "Weapon Master, lvl 2",
+		"bonus": 4
+	},
+	{
+		"name": "Zero-G Training",
+		"bonus": 2
+	},
+	{
+		"name": "Addiction, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Addiction, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Addiction, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Argumentative",
+		"bonus": -1
+	},
+	{
+		"name": "Arrogant",
+		"bonus": -1
+	},
+	{
+		"name": "Bloodlust",
+		"bonus": -2
+	},
+	{
+		"name": "Chronic Pain",
+		"bonus": -2
+	},
+	{
+		"name": "Code of Honor, lvl 1",
+		"bonus": -2
+	},
+	{
+		"name": "Code of Honor, lvl 2",
+		"bonus": -3
+	},
+	{
+		"name": "Code of Honor, lvl 3",
+		"bonus": -4
+	},
+	{
+		"name": "Code of Honor, lvl 4",
+		"bonus": -5
+	},
+	{
+		"name": "Compulsion, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Compulsion, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Compulsion, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Dark Secret, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Dark Secret, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Dark Secret, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Dependent",
+		"bonus": -2
+	},
+	{
+		"name": "Diminished Social Status, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Diminished Social Status, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Diminished Social Status, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Exile",
+		"bonus": -4
+	},
+	{
+		"name": "Fanatic, lvl 1",
+		"bonus": -2
+	},
+	{
+		"name": "Fanatic, lvl 2",
+		"bonus": -3
+	},
+	{
+		"name": "Greedy",
+		"bonus": -1
+	},
+	{
+		"name": "Hides Emotions",
+		"bonus": -2
+	},
+	{
+		"name": "Hypochondria",
+		"bonus": -1
+	},
+	{
+		"name": "Impulsive",
+		"bonus": -1
+	},
+	{
+		"name": "Intolerant, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Intolerant, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Intolerant, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Low Pain Threshold",
+		"bonus": -2
+	},
+	{
+		"name": "Marked Man, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Marked Man, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Marked Man, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Medical Problem, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Medical Problem, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Medical Problem, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Obligation, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Obligation, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Obligation, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Obsessive Tendencies",
+		"bonus": -3
+	},
+	{
+		"name": "Pacifism, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Pacifism, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Pacifism, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Pacifism, lvl 4",
+		"bonus": -4
+	},
+	{
+		"name": "Pacifism, lvl 5",
+		"bonus": -5
+	},
+	{
+		"name": "Phobia, lvl 1",
+		"bonus": -2
+	},
+	{
+		"name": "Phobia, lvl 2",
+		"bonus": -3
+	},
+	{
+		"name": "Phobia, lvl 3",
+		"bonus": -4
+	},
+	{
+		"name": "Phobia, lvl 4",
+		"bonus": -5
+	},
+	{
+		"name": "Physically Impaired, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Physically Impaired, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Physically Impaired, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Poor Chemoreception",
+		"bonus": -1
+	},
+	{
+		"name": "Poor Hearing",
+		"bonus": -1
+	},
+	{
+		"name": "Poor Sight",
+		"bonus": -2
+	},
+	{
+		"name": "Power-hungry, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Power-hungry, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Rival, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Rival, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Rival, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Romantic Attachment, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Romantic Attachment, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Romantic Attachment, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Shady Background, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Shady Background, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Shady Background, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Shady Background, lvl 4",
+		"bonus": -4
+	},
+	{
+		"name": "Shady Background, lvl 5",
+		"bonus": -5
+	},
+	{
+		"name": "Slow Healing",
+		"bonus": -2
+	},
+	{
+		"name": "Species Enemy, lvl 1",
+		"bonus": -3
+	},
+	{
+		"name": "Species Enemy, lvl 2",
+		"bonus": -4
+	},
+	{
+		"name": "Species Enemy, lvl 3",
+		"bonus": -5
+	},
+	{
+		"name": "Suppressed Memory",
+		"bonus": -2
+	},
+	{
+		"name": "Sworn Enemy, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Sworn Enemy, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Sworn Enemy, lvl 3",
+		"bonus": -3
+	},
+	{
+		"name": "Vengeful, lvl 1",
+		"bonus": -1
+	},
+	{
+		"name": "Vengeful, lvl 2",
+		"bonus": -2
+	},
+	{
+		"name": "Weak Will",
+		"bonus": -2
+	},
+	{
+		"name": "Weakness",
+		"bonus": -2
+	},
+	{
+		"name": "Zero-G Intolerance",
+		"bonus": -2
+	}
+]
