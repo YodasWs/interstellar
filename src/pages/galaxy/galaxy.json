@@ -367,6 +367,7 @@
 	},
 	{
 		"name": "ε Indi",
+		"bayer": "ε Ind",
 		"type": "star",
 		"b-v": 1.056,
 		"α": [
