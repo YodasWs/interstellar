@@ -85,13 +85,13 @@ const gfx = (function() {
 			this.renderedPoints = [];
 		},
 
-		rotateTo(px, py, pz, size = 3) {
-			this.rotation = matrix.rotateTo(px, py, pz, size);
+		rotateTo(px, py, pz) {
+			this.rotation = matrix.rotateTo(px, py, pz, 3);
 			this.renderedPoints = [];
 		},
 
-		rotateAbout(θ, vx, vy, vz, size) {
-			this.rotation = matrix.rotateAbout(θ, vx, vy, vz, size);
+		rotateAbout(θ, vx, vy, vz) {
+			this.rotation = matrix.rotateAbout(θ, vx, vy, vz, 3);
 			this.renderedPoints = [];
 		},
 
@@ -447,15 +447,15 @@ const lookAt = {
 	galaxy: {
 		rotate: [75, 0, 0],
 		initEye: [0, 0, 1],
-		u: [0, 1, 0],
+		center: [0, 0, 0],
 	},
 	earth: {
 		rotate: [-45, 35, 0],
-		viewLine: [1, 0, 0],
+		camera: [1, 0, 0],
 		upLine: [0, 0.00001, 1],
 		rotateAbout: [0, 0, 1],
 		initEye: [0, 0, 1],
-		u: [0, 1, 0],
+		center: [0, 0, 0],
 	},
 };
 
@@ -473,7 +473,7 @@ galaxy.forEach((point, i) => {
 	switch (point.type) {
 		case 'star': {
 			let r = 3;
-			let color = [222 / ff, 184 / ff, 135 / ff];
+			let color = [222 / ff, 184 / ff, 135 / ff]; // brown
 			let n = point.d === 0 ? 5 : 3;
 			if (point['b-v'] !== undefined) {
 				if (typeof point['b-v'] === 'number') {
@@ -507,7 +507,7 @@ galaxy.forEach((point, i) => {
 		}
 
 		case 'center': {
-			lookAt.galaxy.viewLine = [
+			lookAt.galaxy.camera = [
 				17 * multiplier * Math.cos(δ) * Math.cos(α),
 				17 * multiplier * Math.cos(δ) * Math.sin(α),
 				17 * multiplier * Math.sin(δ),
@@ -548,28 +548,36 @@ const ring = new gfx.Ring({
 	n: 20,
 });
 
+// TODO: Translate everything to a new center point
+
 Object.keys(lookAt).forEach((v) => {
 	// Vector from Camera to Center
-	lookAt[v].c = matrix.flatten(matrix.multiply(
-		matrix.rotateTo(...lookAt[view].viewLine),
-		matrix.form2dCol(lookAt[v].initEye),
-	));
+	lookAt[v].c = matrix.flatten(
+		matrix.multiply(
+			matrix.rotateTo(...lookAt[view].camera, 4),
+			matrix.form2dCol([...lookAt[v].initEye, 1]),
+		),
+	).slice(0, 3);
+
 	// Vector from Center pointing up-ish
-	const p = matrix.flatten(matrix.multiply(
-		matrix.rotateTo(...lookAt[v].upLine),
-		matrix.form2dCol(lookAt[v].initEye),
-	));
+	const p = matrix.flatten(
+		matrix.multiply(
+			matrix.rotateTo(...lookAt[v].upLine, 4),
+			matrix.form2dCol([...lookAt[v].initEye, 1]),
+		),
+	).slice(0, 3);
+
 	// Cross Product of c × p, this is on xy-Plane
-	lookAt[v].cp = matrix.crossProduct(lookAt[v].c, p);
+	lookAt[v].cp = matrix.crossProduct(lookAt[v].c.slice(0, 3), p.slice(0, 3));
 	// Cross Product of c × cp, this is Normal to xy-Plane
 	lookAt[v].n = matrix.multiply(
-		matrix.crossProduct(lookAt[v].c, lookAt[v].cp),
+		matrix.crossProduct(lookAt[v].c.slice(0, 3), lookAt[v].cp.slice(0, 3)),
 		-1,
 	);
 
 	const u = matrix.multiply(
-		matrix.rotateTo(...lookAt[v].c),
-		lookAt[v].u,
+		matrix.rotateTo(...lookAt[v].c.slice(0, 3)),
+		[0, 1, 0],
 	);
 	lookAt[v].rotation = matrix.multiply(
 		matrix.axonometric(...lookAt[v].rotate, 4),
@@ -579,10 +587,10 @@ Object.keys(lookAt).forEach((v) => {
 					lookAt[v].n,
 					u,
 				)) / Math.hypot(...lookAt[v].n) / Math.hypot(...u)) * 180 / Math.PI,
-				...lookAt[v].c,
+				...lookAt[v].c.slice(0, 3),
 				4,
 			),
-			matrix.rotateTo(...lookAt[v].c, 4),
+			matrix.rotateTo(...lookAt[v].c.slice(0, 3), 4),
 		),
 	);
 
@@ -653,6 +661,7 @@ const start = performance.now();
 		return;
 	}
 
+	WebGL.zoom(10);
 
 	WebGL.init(canvas, [0, 0, 0, 1]);
 
