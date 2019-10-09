@@ -104,6 +104,10 @@ const Matrix = (function() {
 		crossProduct(v1, v2) {
 			if (v1[0] instanceof Array) v1 = this.flatten(v1);
 			if (v2[0] instanceof Array) v2 = this.flatten(v2);
+			if (v1.length !== v2.length) {
+				console.error('Error! Vectors must be same size!');
+				return;
+			}
 			return [
 				v1[y] * v2[z] - v1[z] * v2[y],
 				v1[z] * v2[x] - v1[x] * v2[z],
@@ -223,7 +227,7 @@ const Matrix = (function() {
 						[0, 0, 0, 1],
 					];
 				default:
-					return matrix.identity(size);
+					return this.identity(size);
 			}
 		},
 
