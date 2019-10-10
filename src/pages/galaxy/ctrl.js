@@ -372,11 +372,7 @@ const gfx = (function() {
 		removeShapes(...shape) {
 			shape.forEach((s) => {
 				const i = shapes.indexOf(s);
-				if (i === -1) {
-					console.log('Shape not found');
-					return;
-				}
-				console.log('Removing shape');
+				if (i === -1) return;
 				shapes.splice(i, 1);
 			});
 		},
@@ -394,12 +390,23 @@ const gfx = (function() {
 				if (diff > 2000 && diff <= 10000) {
 					gfx.removeShapes(sol);
 					sol = new gfx.Sphere({
-						color: sol.color,
-						n: sol.n,
-						r: sol.r + 1,
+						color: [x90 / ff, ee / ff, x90 / ff],
+						n: Math.round((diff - 1000) / 400),
+						r: (diff - 1000) / 100,
 					});
 					gfx.addShapes(sol);
 					WebGL.zoom(diff / 200);
+				} else if (diff > 12000 && diff <= 22000) {
+					gfx.removeShapes(sol);
+					sol = new gfx.Sphere({
+						color: [x90 / ff, ee / ff, x90 / ff],
+						n: sol.n,
+						r: (23000 - diff) / 100,
+					});
+					gfx.addShapes(sol);
+					WebGL.zoom((24000 - diff) / 200);
+				} else if (diff > 22000) {
+					start = performance.now();
 				}
 			} else {
 				WebGL.lookAt(
@@ -427,7 +434,9 @@ WebGL.setAmbientLight([0.5, 0.5, 0.5]);
 WebGL.setSpotlightColor([1.0, 1.0, 1.0]);
 WebGL.rotateSpotlight(0, 90, 0);
 
+const x90 = Number.parseInt('90', 16);
 const a0 = Number.parseInt('a0', 16);
+const ee = Number.parseInt('ee', 16);
 const f0 = Number.parseInt('f0', 16);
 const ff = Number.parseInt('ff', 16);
 
@@ -540,8 +549,11 @@ galaxy.forEach((point, i) => {
 				d * Math.cos(δ) * Math.sin(α),
 				d * Math.sin(δ),
 			);
-			sol = star;
 			gfx.addShapes(star);
+
+			if (point.d === 0) {
+				sol = star;
+			}
 			return;
 		}
 
@@ -689,7 +701,7 @@ gfx.addShapes(halo);
 gfx.addShapes(ring);
 // gfx.addShapes(globe);
 
-const start = performance.now();
+let start = performance.now();
 
 (() => {
 	const canvas = document.querySelector('canvas');
