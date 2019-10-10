@@ -65,7 +65,7 @@ const gfx = (function() {
 					}
 					this.renderedPoints.push(
 						matrix.multiply(
-								matrix.add(
+							matrix.add(
 								matrix.multiply(
 									this.rotation,
 									matrix.form2dCol(point),
@@ -83,21 +83,25 @@ const gfx = (function() {
 		rotate(...θ) {
 			this.rotation = matrix.rotation(...θ);
 			this.renderedPoints = [];
+			return this;
 		},
 
 		rotateTo(px, py, pz) {
 			this.rotation = matrix.rotateTo(px, py, pz, 3);
 			this.renderedPoints = [];
+			return this;
 		},
 
 		rotateAbout(θ, vx, vy, vz) {
 			this.rotation = matrix.rotateAbout(θ, vx, vy, vz, 3);
 			this.renderedPoints = [];
+			return this;
 		},
 
 		translate(x, y, z) {
 			this.translation = [x, y, z];
 			this.renderedPoints = [];
+			return this;
 		},
 	};
 
@@ -261,6 +265,17 @@ const gfx = (function() {
 	}) {
 		Shape.call(this, color);
 
+		Object.defineProperties(this, {
+			// TODO: Use set function to recalculate points
+			n: {
+				value: n,
+			},
+			// TODO: Use set function to recalculate points
+			r: {
+				value: r,
+			},
+		});
+
 		this.drawType = gl.TRIANGLE_STRIP;
 		this.indices = [];
 		this.normals = [];
@@ -354,6 +369,18 @@ const gfx = (function() {
 			shapes.push(...shape)
 		},
 
+		removeShapes(...shape) {
+			shape.forEach((s) => {
+				const i = shapes.indexOf(s);
+				if (i === -1) {
+					console.log('Shape not found');
+					return;
+				}
+				console.log('Removing shape');
+				shapes.splice(i, 1);
+			});
+		},
+
 		draw(now) {
 			const diff = now - start;
 
@@ -364,6 +391,16 @@ const gfx = (function() {
 						lookAt[view].rotation,
 					),
 				);
+				if (diff > 2000 && diff <= 10000) {
+					gfx.removeShapes(sol);
+					sol = new gfx.Sphere({
+						color: sol.color,
+						n: sol.n,
+						r: sol.r + 1,
+					});
+					gfx.addShapes(sol);
+					WebGL.zoom(diff / 200);
+				}
 			} else {
 				WebGL.lookAt(
 					matrix.flatten(matrix.multiply(
@@ -461,6 +498,7 @@ const lookAt = {
 
 const multiplier = 35;
 const max = 20;
+let sol;
 
 const galaxy = require('./galaxy.json');
 galaxy.forEach((point, i) => {
@@ -502,6 +540,7 @@ galaxy.forEach((point, i) => {
 				d * Math.cos(δ) * Math.sin(α),
 				d * Math.sin(δ),
 			);
+			sol = star;
 			gfx.addShapes(star);
 			return;
 		}
