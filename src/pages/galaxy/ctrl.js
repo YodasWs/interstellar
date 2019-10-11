@@ -270,9 +270,21 @@ const gfx = (function() {
 			n: {
 				value: n,
 			},
-			// TODO: Use set function to recalculate points
 			r: {
-				value: r,
+				get() { return r; },
+				// Reposition all points
+				set(r1) {
+					this.renderedPoints = [];
+					this.points = this.points.map((point) => {
+						return [
+							point[0] / r * r1,
+							point[1] / r * r1,
+							point[2] / r * r1,
+						];
+					});
+					r = r1;
+					return this;
+				},
 			},
 		});
 
@@ -388,22 +400,10 @@ const gfx = (function() {
 					),
 				);
 				if (diff > 2000 && diff <= 10000) {
-					gfx.removeShapes(sol);
-					sol = new gfx.Sphere({
-						color: [x90 / ff, ee / ff, x90 / ff],
-						n: Math.round((diff - 1000) / 400),
-						r: (diff - 1000) / 100,
-					});
-					gfx.addShapes(sol);
+					sol.r = (diff - 1000) / 100;
 					WebGL.zoom(diff / 200);
 				} else if (diff > 12000 && diff <= 22000) {
-					gfx.removeShapes(sol);
-					sol = new gfx.Sphere({
-						color: [x90 / ff, ee / ff, x90 / ff],
-						n: sol.n,
-						r: (23000 - diff) / 100,
-					});
-					gfx.addShapes(sol);
+					sol.r = (23000 - diff) / 100;
 					WebGL.zoom((24000 - diff) / 200);
 				} else if (diff > 22000) {
 					start = performance.now();
