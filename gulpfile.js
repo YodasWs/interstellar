@@ -34,7 +34,7 @@ const argv = require('yargs')
 			alias: 'p',
 		},
 	})
-	.command('compile', 'Compile all files and output to www folder')
+	.command('compile', 'Compile all files and output to docs folder')
 	.command('generate:page', 'Generate a new page', {
 		name: {
 			describe: 'Name for your new page',
@@ -48,7 +48,7 @@ const argv = require('yargs')
 		},
 	})
 	.command('lint', 'Lint all JavaScript and Sass/SCSS files')
-	.command('transfer-files', 'Transfer all static assets and resources to www folder')
+	.command('transfer-files', 'Transfer all static assets and resources to docs folder')
 	.command('watch', 'Watch files for changes to recompile')
 	.help('?')
 	.epilog(' ©2017–2019 Samuel B Grundman')
@@ -299,7 +299,7 @@ const options = {
 		cascade: false,
 		overrideBrowserslist: browsers,
 	},
-	dest: 'www/',
+	dest: 'docs/',
 	rmLines: {
 		css: {
 			filters: [
@@ -324,7 +324,7 @@ const options = {
 	},
 
 	connect: {
-		root: 'www',
+		root: 'docs',
 		fallback: 'index.html',
 		livereload: true,
 		port: argv.port,
@@ -667,7 +667,7 @@ gulp.task('init:win', () => {
 gulp.task('init', gulp.series(
 	plugins.cli([
 		`mkdir -pv ./src`,
-		`mkdir -pv ./www`,
+		`mkdir -pv ./docs`,
 		`mkdir -pv ./build`,
 		`mkdir -pv ./bundle`,
 		`mkdir -pv ./src/pages`,
