@@ -552,6 +552,19 @@ galaxy.forEach((point, i) => {
 				r = 2;
 			}
 
+			// TODO: Move lookAt.earth.center to a distant star
+			// TODO: This requires a new translation matrix in the WebGL, not this JavaScript program
+			/*
+			if (point.name === 'Gliese 876') {
+				r = 10;
+				lookAt.earth.center = [
+					d * Math.cos(δ) * Math.cos(α),
+					d * Math.cos(δ) * Math.sin(α),
+					d * Math.sin(δ),
+				];
+			}
+			/**/
+
 			const star = new gfx.Sphere({
 				color,
 				n,
@@ -622,6 +635,8 @@ Object.keys(lookAt).forEach((v) => {
 		matrix.rotateTo(...lookAt[v].c.slice(0, 3)),
 		[0, 1, 0],
 	);
+
+	// Rotate Camera
 	lookAt[v].rotation = matrix.multiply(
 		matrix.axonometric(...lookAt[v].rotate, 4),
 		matrix.multiply(
@@ -637,6 +652,19 @@ Object.keys(lookAt).forEach((v) => {
 		),
 	);
 
+	/*
+	// TODO: Move center, what the camera is pointing at
+	// TODO: This requires a new translation matrix in the WebGL, not this JavaScript program
+	// TODO: Most likely needs to be done where we set the camera matrix
+	// TODO: Probably a simple matter of translating the camera matrix
+	matrix.translate(
+		lookAt[v].rotation,
+		...lookAt[v].center,
+	);
+	/**/
+
+	// Get axes orthogonal to camera's view
+	// i.e., the vectors defining the base as seen by the camera
 	lookAt[v].x = matrix.multiply(
 		lookAt[v].rotation,
 		[1, 0, 0, 1],
@@ -681,6 +709,7 @@ Object.keys(lookAt).forEach((v) => {
 	gfx.addShapes(ray);
 });
 
+// Largest cube within celestial globe
 const box = new Array(12).fill(0).map((entry, i) => {
 	const l = max * multiplier * 2 / Math.sqrt(3);
 	const ray = new gfx.Tube({
@@ -710,12 +739,12 @@ const box = new Array(12).fill(0).map((entry, i) => {
 	gfx.addShapes(ray);
 });
 
+// Celestial globe
 const globe = new gfx.Sphere({
 	r: max * multiplier,
 	color: [0, 0, 0, 0.05],
 	n: 20,
 });
-
 gfx.addShapes(globe);
 
 const options = {

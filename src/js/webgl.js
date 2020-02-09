@@ -21,6 +21,7 @@ module.exports = (function() {
 		// Collect all the info needed to use the shader program.
 		// attribLocations are different for each vertex
 		// uniformLocations apply equally to every vertex
+		// TODO: Unify matrices and vectors into object and convert below to Object.entries().forEach()
 		programInfo = {
 			program: shaderProgram,
 			attribLocations: {
@@ -167,6 +168,9 @@ function drawScene(bufferData) {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	// Perspective
+	// TODO: Move to point S is changed to save processing time
+	// Zoom affects only X and Y values
+	// TODO: Adjust Z using map [ Camera, Farthest ] => [ -1, 1 ]
 	const projectionMatrix = (() => {
 		return matrix.flatten([
 			[S * gl.canvas.height / gl.canvas.width, 0, 0, 0],
@@ -181,9 +185,6 @@ function drawScene(bufferData) {
 			indices: gl.createBuffer(),
 			normals: gl.createBuffer(),
 		};
-
-		buffer.points.forEach((p) => {
-		});
 
 		[
 			// Colors
@@ -222,6 +223,7 @@ function drawScene(bufferData) {
 		gl.useProgram(programInfo.program);
 
 		// Set Uniform Matrices
+		// TODO: Unify matrices and vectors into object and convert below to Object.entries().forEach()
 		gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
 		gl.uniformMatrix4fv(programInfo.uniformLocations.cameraMatrix, false, cameraMatrix);
 		gl.uniformMatrix3fv(programInfo.uniformLocations.dLightMatrix, false, dLightMatrix);

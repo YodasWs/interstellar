@@ -125,6 +125,25 @@ const Matrix = (function() {
 			return v1.reduce((sum, c, i) => sum + v1[i] * v2[i], 0);
 		},
 
+		translate(rotation, ...u) {
+			const mat = [];
+			rotation.forEach((row) => {
+				mat.push(row.slice());
+			});
+			u.forEach((v, i) => {
+				mat[i][3] += v;
+			});
+			return mat;
+		},
+
+		translation(...u) {
+			const mat = this.identity(4);
+			u.forEach((v, i) => {
+				mat[i][3] = v;
+			});
+			return mat;
+		},
+
 		rotation(...θ) {
 			θ = θ.map(a => a * Math.PI / 180);
 			const X = [
