@@ -52,7 +52,7 @@ module.exports = (function() {
 
 		// Initialize a shader program; this is where all the lighting
 		// for the vertices and so forth is established.
-		const shaderProgram = initShaderProgram(gl);
+		const shaderProgram = initShaderProgram();
 
 		// Collect all the info needed to use the shader program.
 		programInfo.program = shaderProgram;
@@ -68,6 +68,7 @@ module.exports = (function() {
 
 		// Define uniform locations
 		// These apply equally to every vertex
+		// Defines camera positioning, perspective, and lighting
 		Object.entries(programInfo.uniformMatrices).forEach(([key, obj]) => {
 			programInfo.uniformLocations[key] = gl.getUniformLocation(shaderProgram, obj.webglVar);
 		});
@@ -91,7 +92,7 @@ module.exports = (function() {
 //
 // Initialize a shader program, so WebGL knows how to draw our data
 //
-function initShaderProgram(gl) {
+function initShaderProgram() {
 	// Vertex shader program
 	const vsSource = `
 		attribute vec4 aVertexPosition;
@@ -146,8 +147,8 @@ function initShaderProgram(gl) {
 		}
 	`;
 
-	const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
-	const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+	const vertexShader = loadShader(gl.VERTEX_SHADER, vsSource);
+	const fragmentShader = loadShader(gl.FRAGMENT_SHADER, fsSource);
 
 	// Create the shader program
 
@@ -169,7 +170,7 @@ function initShaderProgram(gl) {
 //
 // creates a shader of the given type, uploads the source, and compiles it.
 //
-function loadShader(gl, type, source) {
+function loadShader(type, source) {
 	const shader = gl.createShader(type);
 
 	// Send the source to the shader object
@@ -194,7 +195,7 @@ function loadShader(gl, type, source) {
 function drawScene(bufferData) {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// Perspective
+	// Projection
 	// TODO: Move to point S is changed to save processing time
 	// Zoom affects only X and Y values
 	// TODO: Adjust Z using map [ Camera, Farthest ] => [ -1, 1 ]
