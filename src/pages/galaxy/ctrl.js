@@ -103,6 +103,12 @@ const gfx = (function() {
 			this.renderedPoints = [];
 			return this;
 		},
+
+		move(...move) {
+			this.translation = this.translation.map((x, i) => x + move[i]);
+			this.renderedPoints = [];
+			return this;
+		},
 	};
 
 	function Square({
@@ -585,27 +591,6 @@ galaxy.forEach((point, i) => {
 	}
 });
 
-const planeColor = [
-	0.0,//Number.parseInt('2e', 16) / ff,
-	0.0,//Number.parseInt('8b', 16) / ff,
-	0.0,//Number.parseInt('57', 16) / ff,
-	0.75,
-];
-
-const halo = new gfx.Disc({
-	r: max * multiplier,
-	color: planeColor,
-	n: 20,
-});
-
-const ring = new gfx.Ring({
-	r: max * multiplier + 1,
-	thickness: 10,
-	color: planeColor,
-	inward: false,
-	n: 20,
-});
-
 // TODO: Translate everything to a new center point
 
 Object.keys(lookAt).forEach((v) => {
@@ -674,10 +659,6 @@ Object.keys(lookAt).forEach((v) => {
 	}
 });
 
-// Rotate onto Galactic Plane
-halo.rotateTo(...lookAt[view].n);
-ring.rotateTo(...lookAt[view].n);
-
 [
 	lookAt[view].c,
 	lookAt[view].cp,
@@ -700,15 +681,42 @@ ring.rotateTo(...lookAt[view].n);
 	gfx.addShapes(ray);
 });
 
+const box = new Array(12).fill(0).map((entry, i) => {
+	const l = max * multiplier * 2 / Math.sqrt(3);
+	const ray = new gfx.Tube({
+		r: 1,
+		l,
+		color: [1, 1, 1],
+		n: 4,
+		m: 1,
+	});
+	ray.rotate(
+		i % 3 === 0 ? 90 : 0,
+		i % 3 === 1 ? 90 : 0,
+		i % 3 === 2 ? 90 : 0,
+	).translate(
+		i % 3 == 0 ? Math.pow(-1, i % 2) * l / 2 : 0,
+		i % 3 == 1 ? Math.pow(-1, i % 2) * l / 2 : 0,
+		i % 3 == 2 ? Math.pow(-1, i % 2) * l / 2 : 0,
+	).move(
+		i % 3 == 1 ? -1 * l / 2 : 0,
+		i % 3 == 2 ? -1 * l / 2 : 0,
+		i % 3 == 0 ? -1 * l / 2 : 0,
+	).move(
+		i % 3 == 2 ? Math.pow(-1, i % 2) * (i < 6 ? -1 : 1) * l / 2 : 0,
+		i % 3 == 0 ? Math.pow(-1, i % 2) * (i < 6 ? -1 : 1) * l / 2 : 0,
+		i % 3 == 1 ? Math.pow(-1, i % 2) * (i < 6 ? -1 : 1) * l / 2 : 0,
+	);
+	gfx.addShapes(ray);
+});
+
 const globe = new gfx.Sphere({
-	r: 20 * multiplier,
+	r: max * multiplier,
 	color: [0, 0, 0, 0.05],
 	n: 20,
 });
 
-gfx.addShapes(halo);
-gfx.addShapes(ring);
-// gfx.addShapes(globe);
+gfx.addShapes(globe);
 
 const options = {
 	animation: {},
