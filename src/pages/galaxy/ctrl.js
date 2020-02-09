@@ -396,40 +396,29 @@ const gfx = (function() {
 		},
 
 		draw(now) {
-			if (true) {
-				if (options.animation.rotate.run) {
-					const obj = options.animation.rotate;
-					obj.diff = now - options.animation.rotate.start;
-					WebGL.setCameraMatrix(
-						matrix.multiply(
-							matrix.rotateAbout((-obj.diff / 50) % 360, ...lookAt[view].rotateAbout, 4),
-							lookAt[view].rotation,
-						),
-					);
-				}
-
-				if (options.animation.zoom.run) {
-					const obj = options.animation.zoom;
-					obj.diff = now - obj.start;
-					if (obj.diff > 2000 && obj.diff <= 10000) {
-						sol.r = (obj.diff - 1000) / 100;
-						WebGL.zoom(obj.diff / 200);
-					} else if (obj.diff > 12000 && obj.diff <= 22000) {
-						sol.r = (23000 - obj.diff) / 100;
-						WebGL.zoom((24000 - obj.diff) / 200);
-					} else if (obj.diff > 22000) {
-						obj.start = performance.now();
-					}
-				}
-			} else {
-				WebGL.lookAt(
-					matrix.flatten(matrix.multiply(
-						matrix.rotateAbout((-diff / 50) % 360, ...lookAt[view].y),
-						lookAt[view].z,
-					)), // camera position
-					[0, 0, 0], // center
-					lookAt[view].y, // up
+			if (options.animation.rotate.run) {
+				const obj = options.animation.rotate;
+				obj.diff = now - obj.start;
+				WebGL.setCameraMatrix(
+					matrix.multiply(
+						matrix.rotateAbout((-obj.diff / 50) % 360, ...lookAt[view].rotateAbout, 4),
+						lookAt[view].rotation,
+					),
 				);
+			}
+
+			if (options.animation.zoom.run) {
+				const obj = options.animation.zoom;
+				obj.diff = now - obj.start;
+				if (obj.diff > 2000 && obj.diff <= 10000) {
+					sol.r = (obj.diff - 1000) / 100;
+					WebGL.zoom(obj.diff / 200);
+				} else if (obj.diff > 12000 && obj.diff <= 22000) {
+					sol.r = (23000 - obj.diff) / 100;
+					WebGL.zoom((24000 - obj.diff) / 200);
+				} else if (obj.diff > 22000) {
+					obj.start = performance.now();
+				}
 			}
 
 			const bufferData = [];
@@ -442,10 +431,6 @@ const gfx = (function() {
 		},
 	};
 })();
-
-WebGL.setAmbientLight([0.5, 0.5, 0.5]);
-WebGL.setSpotlightColor([1.0, 1.0, 1.0]);
-WebGL.rotateSpotlight(0, 90, 0);
 
 const x90 = Number.parseInt('90', 16);
 const a0 = Number.parseInt('a0', 16);
@@ -784,9 +769,13 @@ const options = {
 		return;
 	}
 
-	WebGL.zoom(10);
-
 	WebGL.init(canvas, [0, 0, 0, 1]);
+
+	WebGL.setAmbientLight([0.5, 0.5, 0.5]);
+	WebGL.setSpotlightColor([1.0, 1.0, 1.0]);
+	WebGL.rotateSpotlight(0, 90, 0);
+
+	WebGL.zoom(10);
 
 	WebGL.setCameraMatrix(lookAt[view].rotation);
 
