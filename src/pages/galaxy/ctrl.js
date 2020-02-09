@@ -400,24 +400,21 @@ const gfx = (function() {
 							lookAt[view].rotation,
 						),
 					);
-					if (obj.diff > 50) {
-						options.animation.zoom.start = performance.now();
-					}
 				}
 
 				if (options.animation.zoom.run) {
-					const diff = now - options.animation.zoom.start;
-					if (diff > 2000 && diff <= 10000) {
-						sol.r = (diff - 1000) / 100;
-						WebGL.zoom(diff / 200);
-					} else if (diff > 12000 && diff <= 22000) {
-						sol.r = (23000 - diff) / 100;
-						WebGL.zoom((24000 - diff) / 200);
-					} else if (diff > 22000) {
-						options.animation.zoom.start = performance.now();
+					const obj = options.animation.zoom;
+					obj.diff = now - obj.start;
+					if (obj.diff > 2000 && obj.diff <= 10000) {
+						sol.r = (obj.diff - 1000) / 100;
+						WebGL.zoom(obj.diff / 200);
+					} else if (obj.diff > 12000 && obj.diff <= 22000) {
+						sol.r = (23000 - obj.diff) / 100;
+						WebGL.zoom((24000 - obj.diff) / 200);
+					} else if (obj.diff > 22000) {
+						obj.start = performance.now();
 					}
 				}
-
 			} else {
 				WebGL.lookAt(
 					matrix.flatten(matrix.multiply(
