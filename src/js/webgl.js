@@ -5,35 +5,42 @@
 const matrix = require('./matrix.js');
 const programInfo = {
 	uniformMatrices: {
-		projectionMatrix: {
+		projection: {
+			webglVar: 'uProjectionMatrix',
 			type: 'uniformMatrix4fv',
 			transpose: false,
 			mat: [],
 		},
-		cameraMatrix: {
+		camera: {
+			webglVar: 'uCameraMatrix',
 			mat: matrix.flatten(matrix.identity(4)),
 			type: 'uniformMatrix4fv',
 			transpose: false,
 		},
 		normalMatrix: {
+			webglVar: 'uNormalMatrix',
 			mat: matrix.flatten(matrix.identity(4)),
 			type: 'uniformMatrix4fv',
 			transpose: false,
 		},
+		ambientLight: {
+			webglVar: 'uAmbientLight',
+			mat: [0.5, 0.5, 0.5],
+			type: 'uniform3fv',
+		},
 		dLightMatrix: {
+			webglVar: 'uLightMatrix',
 			mat: matrix.flatten(matrix.identity(3)),
 			type: 'uniformMatrix3fv',
 			transpose: false,
 		},
-		ambientLight: {
-			mat: [0.5, 0.5, 0.5],
-			type: 'uniform3fv',
-		},
 		dLightColor: {
+			webglVar: 'uDLightColor',
 			mat: [0.3, 0.7, 0.3],
 			type: 'uniform3fv',
 		},
 	},
+	uniformLocations: {},
 };
 let gl;
 
@@ -48,23 +55,22 @@ module.exports = (function() {
 		const shaderProgram = initShaderProgram(gl);
 
 		// Collect all the info needed to use the shader program.
-		// attribLocations are different for each vertex
-		// uniformLocations apply equally to every vertex
-		// TODO: Unify matrices and vectors into object and convert below to Object.entries().forEach()
 		programInfo.program = shaderProgram;
+
+		// attribLocations are different for each vertex, they define each point to be rendered
+		// TODO: Unify matrices and vectors into object and convert below to Object.entries().forEach()
 		programInfo.attribLocations = {
 			vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+			// Normal vector of plane tangent to object at this vertex
 			vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
 			vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
 		};
-		programInfo.uniformLocations = {
-			projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-			cameraMatrix: gl.getUniformLocation(shaderProgram, 'uCameraMatrix'),
-			normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
-			dLightMatrix: gl.getUniformLocation(shaderProgram, 'uLightMatrix'),
-			ambientLight: gl.getUniformLocation(shaderProgram, 'uAmbientLight'),
-			dLightColor: gl.getUniformLocation(shaderProgram, 'uDLightColor'),
-		};
+
+		// Define uniform locations
+		// These apply equally to every vertex
+		Object.entries(programInfo.uniformMatrices).forEach(([key, obj]) => {
+			programInfo.uniformLocations[key] = gl.getUniformLocation(shaderProgram, obj.webglVar);
+		});
 
 		// Set Drawing Options
 		gl.clearColor(...bgColor);
@@ -192,7 +198,7 @@ function drawScene(bufferData) {
 	// TODO: Move to point S is changed to save processing time
 	// Zoom affects only X and Y values
 	// TODO: Adjust Z using map [ Camera, Farthest ] => [ -1, 1 ]
-	programInfo.uniformMatrices.projectionMatrix.mat = (() => {
+	programInfo.uniformMatrices.projection.mat = (() => {
 		return matrix.flatten([
 			[S * gl.canvas.height / gl.canvas.width, 0, 0, 0],
 			[0, S, 0, 0],
@@ -261,23 +267,23 @@ function drawScene(bufferData) {
 // Rotate View
 //
 function rotateCamera(...θ) {
-	programInfo.uniformMatrices.cameraMatrix.mat = matrix.flatten([
+	programInfo.uniformMatrices.camera.mat = matrix.flatten([
 		...matrix.axonometric(...θ).map(r => r.push(0) && r),
 		[0, 0, 0, 1],
 	]);
 
 	// Undo Camera Rotation to keep Lighting in constant position
-	programInfo.uniformMatrices.normalMatrix.mat = matrix.flatten(matrix.inverseTranspose(programInfo.uniformMatrices.cameraMatrix.mat));
+	programInfo.uniformMatrices.normalMatrix.mat = matrix.flatten(matrix.inverseTranspose(programInfo.uniformMatrices.camera.mat));
 }
 
 function lookAt(eye, center, up) {
 	programInfo.uniformMatrices.normalMatrix.mat = matrix.flatten(matrix.lookAt(eye, center, up).rotation);
-	programInfo.uniformMatrices.cameraMatrix.mat = matrix.flatten(matrix.inverseTranspose(programInfo.uniformMatrices.normalMatrix.mat));
+	programInfo.uniformMatrices.camera.mat = matrix.flatten(matrix.inverseTranspose(programInfo.uniformMatrices.normalMatrix.mat));
 }
 
 function setCameraMatrix(camera) {
-	programInfo.uniformMatrices.cameraMatrix.mat = matrix.flatten(camera);
-	programInfo.uniformMatrices.normalMatrix.mat = matrix.flatten(matrix.inverseTranspose(programInfo.uniformMatrices.cameraMatrix.mat));
+	programInfo.uniformMatrices.camera.mat = matrix.flatten(camera);
+	programInfo.uniformMatrices.normalMatrix.mat = matrix.flatten(matrix.inverseTranspose(programInfo.uniformMatrices.camera.mat));
 }
 
 function zoom(z) {
