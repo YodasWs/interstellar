@@ -6,14 +6,20 @@
 		height: calc(#{$width} * 3 / 4);
 		max-width: 900px;
 		margin: 0 auto;
+
+		float: right;
+		width: 75%;
+		height: auto;
 	}
 
 	form {
 		display: flex;
 		flex-flow: row wrap;
 
-		> section {
-			width: 50%;
+		fieldset {
+			display: flex;
+			flex-flow: column nowrap;
+			flex-grow: 1;
 		}
 	}
 

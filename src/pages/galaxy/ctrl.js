@@ -390,24 +390,34 @@ const gfx = (function() {
 		},
 
 		draw(now) {
-			const diff = now - start;
-
 			if (true) {
-				WebGL.setCameraMatrix(
-					matrix.multiply(
-						matrix.rotateAbout((-diff / 50) % 360, ...lookAt[view].rotateAbout, 4),
-						lookAt[view].rotation,
-					),
-				);
-				if (diff > 2000 && diff <= 10000) {
-					sol.r = (diff - 1000) / 100;
-					WebGL.zoom(diff / 200);
-				} else if (diff > 12000 && diff <= 22000) {
-					sol.r = (23000 - diff) / 100;
-					WebGL.zoom((24000 - diff) / 200);
-				} else if (diff > 22000) {
-					start = performance.now();
+				if (options.animation.rotate.run) {
+					const obj = options.animation.rotate;
+					obj.diff = now - options.animation.rotate.start;
+					WebGL.setCameraMatrix(
+						matrix.multiply(
+							matrix.rotateAbout((-obj.diff / 50) % 360, ...lookAt[view].rotateAbout, 4),
+							lookAt[view].rotation,
+						),
+					);
+					if (obj.diff > 50) {
+						options.animation.zoom.start = performance.now();
+					}
 				}
+
+				if (options.animation.zoom.run) {
+					const diff = now - options.animation.zoom.start;
+					if (diff > 2000 && diff <= 10000) {
+						sol.r = (diff - 1000) / 100;
+						WebGL.zoom(diff / 200);
+					} else if (diff > 12000 && diff <= 22000) {
+						sol.r = (23000 - diff) / 100;
+						WebGL.zoom((24000 - diff) / 200);
+					} else if (diff > 22000) {
+						options.animation.zoom.start = performance.now();
+					}
+				}
+
 			} else {
 				WebGL.lookAt(
 					matrix.flatten(matrix.multiply(
@@ -701,8 +711,34 @@ gfx.addShapes(halo);
 gfx.addShapes(ring);
 // gfx.addShapes(globe);
 
-let start = performance.now();
+const options = {
+	animation: {},
+};
 
+// Add event listeners to form inputs
+(() => {
+	// Animation Options
+	[
+		'rotate',
+		'zoom',
+	].forEach((option) => {
+		const input = document.querySelector(`[name="animate-${option}"]`);
+		if (input instanceof HTMLInputElement) {
+			options.animation[option] = {
+				start: performance.now(),
+				run: input.checked,
+				diff: 0,
+			};
+			const obj = options.animation[option];
+			input.addEventListener('change', () => {
+				obj.start = performance.now() - obj.diff;
+				obj.run = input.checked;
+			});
+		}
+	});
+})();
+
+// Now run animation
 (() => {
 	const canvas = document.querySelector('canvas');
 
