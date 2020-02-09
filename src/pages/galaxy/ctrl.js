@@ -684,11 +684,13 @@ ring.rotateTo(...lookAt[view].n);
 	lookAt[view].n,
 ].forEach((v, i) => {
 	const ray = new gfx.Tube({
-		r: 1,
+		r: 3,
 		l: max * multiplier,
 		color: new Array(4).fill(0).map((zero, j) => {
 			if (i === j) return 1;
 			if (j === 3) return 1;
+			// Need a visible cyan, not dark blue
+			if (i === 2 && j === 1) return 1;
 			return 0;
 		}),
 		n: 4,
