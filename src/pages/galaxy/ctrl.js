@@ -399,9 +399,15 @@ const gfx = (function() {
 			if (options.animation.rotate.run) {
 				const obj = options.animation.rotate;
 				obj.diff = now - obj.start;
+
+				const axis = matrix.multiply(
+					lookAt[view].rotateAbout,
+					1 / Math.hypot(...lookAt[view].rotateAbout),
+				);
+
 				WebGL.setCameraMatrix(
 					matrix.multiply(
-						matrix.rotateAbout((-obj.diff / 50) % 360, ...lookAt[view].rotateAbout, 4),
+						matrix.rotateAbout((obj.diff / 50) % 360, ...axis, 4),
 						lookAt[view].rotation,
 					),
 				);
@@ -775,7 +781,7 @@ const options = {
 	WebGL.setSpotlightColor([1.0, 1.0, 1.0]);
 	WebGL.rotateSpotlight(0, 90, 0);
 
-	WebGL.zoom(10);
+	WebGL.zoom(12);
 
 	WebGL.setCameraMatrix(lookAt[view].rotation);
 

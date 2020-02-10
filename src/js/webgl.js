@@ -284,7 +284,7 @@ function lookAt(eye, center, up) {
 
 function setCameraMatrix(camera) {
 	programInfo.uniformMatrices.camera.mat = matrix.flatten(camera);
-	programInfo.uniformMatrices.normalMatrix.mat = matrix.flatten(matrix.inverseTranspose(programInfo.uniformMatrices.camera.mat));
+	programInfo.uniformMatrices.normalMatrix.mat = matrix.flatten(matrix.inverseTranspose(camera));
 }
 
 function zoom(z) {
