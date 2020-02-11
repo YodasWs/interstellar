@@ -538,9 +538,10 @@ galaxy.forEach((point, i) => {
 			}
 
 			if (d / multiplier >= 16.5) {
-				d = max * multiplier;
+				d = max * multiplier - 10;
 				n = 3;
 				r = 2;
+				r = 10;
 			}
 
 			// TODO: Move lookAt.earth.center to a distant star
@@ -575,15 +576,11 @@ galaxy.forEach((point, i) => {
 		}
 
 		case 'center': {
-			lookAt.galaxy.camera = [
-				17 * multiplier * Math.cos(δ) * Math.cos(α),
-				17 * multiplier * Math.cos(δ) * Math.sin(α),
-				17 * multiplier * Math.sin(δ),
-			];
 			return;
 		}
 
 		case 'pole': {
+			// Line to center of the galaxy
 			lookAt.galaxy.upLine = [
 				17 * multiplier * Math.cos(δ) * Math.cos(α),
 				17 * multiplier * Math.cos(δ) * Math.sin(α),
@@ -599,9 +596,11 @@ galaxy.forEach((point, i) => {
 
 Object.keys(lookAt).forEach((v) => {
 	// Vector from Camera to Center
+	// Direction to Center is lookAt[v].camera
+	// Distance from Center is 1 / Math.hypot(...lookAt[v].initEye)
 	lookAt[v].c = matrix.flatten(
 		matrix.multiply(
-			matrix.rotateTo(...lookAt[view].camera, 4),
+			matrix.rotateTo(...lookAt[v].camera, 4),
 			matrix.form2dCol([...lookAt[v].initEye, 1]),
 		),
 	).slice(0, 3);
@@ -697,7 +696,7 @@ Object.keys(lookAt).forEach((v) => {
 		m: 1,
 	});
 	ray.rotateTo(...v);
-	gfx.addShapes(ray);
+	// gfx.addShapes(ray);
 });
 
 // Largest cube within celestial globe
@@ -727,13 +726,13 @@ const box = new Array(12).fill(0).map((entry, i) => {
 		i % 3 == 0 ? Math.pow(-1, i % 2) * (i < 6 ? -1 : 1) * l / 2 : 0,
 		i % 3 == 1 ? Math.pow(-1, i % 2) * (i < 6 ? -1 : 1) * l / 2 : 0,
 	);
-	gfx.addShapes(ray);
+	// gfx.addShapes(ray);
 });
 
 // Celestial globe
 const globe = new gfx.Sphere({
 	r: max * multiplier,
-	color: [0, 0, 0, 0.05],
+	color: [0, 0, 0, 0.8],
 	n: 20,
 });
 gfx.addShapes(globe);
