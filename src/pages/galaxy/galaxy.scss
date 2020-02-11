@@ -51,4 +51,10 @@
 		text-align: right;
 		min-width: 2em;
 	}
+
+	&::after {
+		display: block;
+		content: '';
+		clear: both;
+	}
 }
