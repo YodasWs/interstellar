@@ -195,18 +195,9 @@ function loadShader(type, source) {
 function drawScene(bufferData) {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	// Projection
-	// TODO: Move to point S is changed to save processing time
-	// Zoom affects only X and Y values
-	// TODO: Adjust Z using map [ Camera, Farthest ] => [ -1, 1 ]
-	programInfo.uniformMatrices.projection.mat = (() => {
-		return matrix.flatten([
-			[S * gl.canvas.height / gl.canvas.width, 0, 0, 0],
-			[0, S, 0, 0],
-			[0, 0, -1, 0],
-			[0, 0, 0, 1],
-		]);
-	})();
+	if (programInfo.uniformMatrices.projection.mat.length === 0) {
+		zoom(10);
+	}
 
 	bufferData.forEach((buffer) => {
 		const buffers = {
@@ -289,6 +280,18 @@ function setCameraMatrix(camera) {
 
 function zoom(z) {
 	S = 50 / z;
+	// Projection
+	// TODO: Move to point S is changed to save processing time
+	// Zoom affects only X and Y values
+	// TODO: Adjust Z using map [ Camera, Farthest ] => [ -1, 1 ]
+	programInfo.uniformMatrices.projection.mat = (() => {
+		return matrix.flatten([
+			[S * gl.canvas.height / gl.canvas.width, 0, 0, 0],
+			[0, S, 0, 0],
+			[0, 0, -1, 0],
+			[0, 0, 0, 1],
+		]);
+	})();
 }
 
 return {

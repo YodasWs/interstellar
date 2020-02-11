@@ -496,11 +496,12 @@ const view = 'earth';
 const lookAt = {
 	galaxy: {
 		rotate: [75, 0, 0],
+		camera: [1, 0, 0],
 		initEye: [0, 0, 1],
 		center: [0, 0, 0],
 	},
 	earth: {
-		rotate: [-45, 35, 0],
+		rotate: [-23.5, 15, 0],
 		camera: [1, 0, 0],
 		upLine: [0, 0.00001, 1],
 		rotateAbout: [0, 0, 1],
@@ -508,6 +509,9 @@ const lookAt = {
 		center: [0, 0, 0],
 	},
 };
+
+// TODO: Look up how to write translation matrix to move the center and the camera
+// TODO: This requires a new translation matrix or two in the WebGL, not this JavaScript program
 
 const multiplier = 35;
 const max = 20;
@@ -537,25 +541,11 @@ galaxy.forEach((point, i) => {
 				}
 			}
 
-			if (d / multiplier >= 16.5) {
-				d = max * multiplier - 10;
+			if (point.d >= 16.5) {
+				d = max * multiplier;
 				n = 3;
-				r = 2;
-				r = 10;
+				r = 5;
 			}
-
-			// TODO: Move lookAt.earth.center to a distant star
-			// TODO: This requires a new translation matrix in the WebGL, not this JavaScript program
-			/*
-			if (point.name === 'Gliese 876') {
-				r = 10;
-				lookAt.earth.center = [
-					d * Math.cos(δ) * Math.cos(α),
-					d * Math.cos(δ) * Math.sin(α),
-					d * Math.sin(δ),
-				];
-			}
-			/**/
 
 			const star = new gfx.Sphere({
 				color,
@@ -604,6 +594,7 @@ Object.keys(lookAt).forEach((v) => {
 			matrix.form2dCol([...lookAt[v].initEye, 1]),
 		),
 	).slice(0, 3);
+	console.log('Sam, c:', lookAt[v].c);
 
 	// Vector from Center pointing up-ish
 	const p = matrix.flatten(
@@ -641,6 +632,17 @@ Object.keys(lookAt).forEach((v) => {
 			matrix.rotateTo(...lookAt[v].c.slice(0, 3), 4),
 		),
 	);
+
+	// Translate to new center; maps to (0, 0)
+	// lookAt[v].rotation[3] = [...lookAt[v].center, 1];
+
+	/*
+	// For Experimenting
+	lookAt[v].rotation[0][3] = 0/100;
+	lookAt[v].rotation[1][3] = 0/100;
+	lookAt[v].rotation[2][3] = 0/100;
+	lookAt[v].rotation[3] = [0, 0, 0, 1];
+	/**/
 
 	/*
 	// TODO: Move center, what the camera is pointing at
@@ -686,10 +688,10 @@ Object.keys(lookAt).forEach((v) => {
 		r: 3,
 		l: max * multiplier,
 		color: new Array(4).fill(0).map((zero, j) => {
-			if (i === j) return 1;
+			if (i % 3 === j) return 1;
 			if (j === 3) return 1;
 			// Need a visible cyan, not dark blue
-			if (i === 2 && j === 1) return 1;
+			if (i % 3 === 2 && j === 1) return 1;
 			return 0;
 		}),
 		n: 4,
@@ -735,7 +737,7 @@ const globe = new gfx.Sphere({
 	color: [0, 0, 0, 0.8],
 	n: 20,
 });
-gfx.addShapes(globe);
+// gfx.addShapes(globe);
 
 const options = {
 	animation: {},
@@ -766,6 +768,8 @@ const options = {
 
 // Now run animation
 (() => {
+	console.log('Sam, view:', lookAt.earth.rotate);
+	console.log('Sam, view:', lookAt.earth.rotation);
 	const canvas = document.querySelector('canvas');
 
 	// If we don't have a GL context, give up now
