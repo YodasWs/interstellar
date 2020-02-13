@@ -875,5 +875,154 @@
 		"α": [ 22, 21, 39.37542 ],
 		"δ": [ -1, 23, 14.4031 ],
 		"d": 164
+	},
+	{
+		"name": "η Orionis",
+		"bayer": "η Ori",
+		"constellation": "Orion",
+		"type": "star",
+		"b-v": -0.17,
+		"α": [ 5, 24, 28.61672 ],
+		"δ": [ -2, 23, 49.7311 ],
+		"d": 1000
+	},
+	{
+		"name": "θ1 Orionis A",
+		"bayer": "θ1 Ori A",
+		"constellation": "Orion",
+		"type": "star",
+		"α": [ 5, 35, 15.84743 ],
+		"δ": [ -5, 23, 14.3441 ],
+		"d": 1240
+	},
+	{
+		"name": "ι Orionis",
+		"bayer": "ι Ori",
+		"constellation": "Orion",
+		"type": "star",
+		"b-v": -0.24,
+		"α": [ 5, 35, 25.98191 ],
+		"δ": [ -5, 54, 35.6435 ],
+		"d": 2300
+	},
+	{
+		"name": "Antares",
+		"bayer": "α Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": 1.83,
+		"α": [ 16, 29, 24.45970 ],
+		"δ": [ -26, 25, 55.2094 ],
+		"d": 550
+	},
+	{
+		"name": "Acrab",
+		"bayer": "β Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": -0.08,
+		"α": [ 16, 5, 26.23198 ],
+		"δ": [ -19, 48, 19.6300 ],
+		"d": 400
+	},
+	{
+		"name": "Dschubba",
+		"bayer": "δ Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": -0.124,
+		"α": [ 16, 0, 20.00528 ],
+		"δ": [ -22, 37, 18.1431 ],
+		"d": 444
+	},
+	{
+		"name": "Larawag",
+		"bayer": "ε Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": 1.15,
+		"α": [ 16, 50, 9.8 ],
+		"δ": [ -34, 17, 36 ],
+		"d": 63.7
+	},
+	{
+		"name": "ζ1 Scorpii",
+		"bayer": "ζ1 Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": 0.48,
+		"α": [ 16, 53, 59.7265 ],
+		"δ": [ -42, 21, 43.3063 ],
+		"d": 2600
+	},
+	{
+		"name": "ζ2 Scorpii",
+		"bayer": "ζ2 Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": 1.37,
+		"α": [ 16, 54, 35.00435 ],
+		"δ": [ -42, 21, 40.7404 ],
+		"d": 132
+	},
+	{
+		"name": "η Scorpii",
+		"bayer": "η Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": 0.41,
+		"α": [ 17, 12, 9.19565 ],
+		"δ": [ -43, 14, 21.0905 ],
+		"d": 73.5
+	},
+	{
+		"name": "Sargas",
+		"bayer": "θ Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": 0.4,
+		"α": [ 17, 37, 19.12985 ],
+		"δ": [ -42, 59, 52.1808 ],
+		"d": 300
+	},
+	{
+		"name": "π Scorpii",
+		"bayer": "π Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": -0.187,
+		"α": [ 15, 58, 51.11324 ],
+		"δ": [ -26, 6, 50.7886 ],
+		"d": 590
+	},
+	{
+		"name": "ι1 Scorpii",
+		"bayer": "ι1 Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": 0.51,
+		"α": [ 17, 47, 35.08113 ],
+		"δ": [ -40, 7, 37.1893 ],
+		"d": 1900
+	},
+	{
+		"name": "Girtab",
+		"bayer": "κ Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": -0.228,
+		"α": [ 17, 42, 29.2752 ],
+		"δ": [ -39, 1, 47.9391 ],
+		"d": 480
+	},
+	{
+		"name": "Shaula",
+		"bayer": "λ Sco",
+		"constellation": "Scorpius",
+		"type": "star",
+		"b-v": -0.24,
+		"α": [ 17, 33, 36.52 ],
+		"δ": [ -37, 6, 13.76 ],
+		"d": 570
 	}
 ]
